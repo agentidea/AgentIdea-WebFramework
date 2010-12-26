@@ -14,15 +14,17 @@ dbDefault = "demo"
 identity = (ClientID,dbDefault)
 
 
-HTTP_DESTINATION = "localhost"
-HTTP_PATH = "/pn_5/Services/TemplateHelper.asmx"
-
 LogPath ="C:\inetpub\wwwroot\\net4\pyInetPub\demo\\demo\logs"
 Log = "pyLog.txt"
 LogFile = "{0}\{1}".format(LogPath,Log)
 
 commandDefaultTuple = ("coreCommands","cmd")
 
+#MongoDB credentials
+dbIP = "127.0.0.1"
+dbPort = 27017
+dbPwd = ""
+dbUsr = ""
 
 rootProjectCollectionName = "nodes.general"
 rootProjectTreeName = "root_v1"
@@ -30,12 +32,11 @@ rootProjectTreeName = "root_v1"
 SHOW_ACTION = True
 HIDE_ACTION = False
 
-dbIP = "127.0.0.1"
-dbPort = 27017
-dbPwd = ""
-dbUsr = ""
 
-appLogoImage = "cropped.jpg"
+
+appLogoImage = "myLogo.jpg"
+
+#simple navigation defined here
 nav = [
        {'name':'about us','A':"ShowAbout('west');"},
        
