@@ -1,5 +1,7 @@
-AgentIdea Web Framework
+AgentIdea Framework
 
 Command oriented client - server system
 
-First addition: JavaScript Python Peers
+First addition: JavaScript webclient & Python Server Peers
+
+Current Protocol - http/https
