@@ -13,8 +13,8 @@
 //      C# peers receive .NET XML serialization requests
 
 //      to call Python Server Peer use processJSON()
-//		Python peers recieve JSON requests.
-//      The JSON request automatically maps to Pythons Dictionaries
+//		Python peers receive JSON requests.
+//      The JSON request automatically maps to Python Dictionaries
 //      and Lists
 
 
