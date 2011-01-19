@@ -1,27 +1,40 @@
 
-//----------------------------------
-//		AgentIdea Web Framework
-//		Core Components
-//----------------------------------	
-
-//      JavaScript /client Peer
-//     	makes http requests to either 
-//     	a C# or PYTHON Server
+// JavaScript Browser Peer
+//     to a PYTHON Server
 
 
-//      to call C# Server Peer use processRequest()
-//      C# peers receive .NET XML serialization requests
 
-//      to call Python Server Peer use processJSON()
-//		Python peers receive JSON requests.
-//      The JSON request automatically maps to Python Dictionaries
-//      and Lists
-
+////////////////////
+// GLOBAL VARIABLES
+// for WEB SERVICE endpoint
 
 var xmlHttpLocal = null;
 var SYNC = false;
 var gDisableAJAXcalls = false;
 var bCallBusyLock = false;
+
+//var dest = "localhost";
+var dest = "184.106.112.115";
+
+//var url = "http://"+ dest +"/DieTafel/processor2.py";
+var url =  "http://"+ dest +"/table";
+
+	toggleLog = function(o)
+	{
+		var logDiv = document.getElementById("divLog");
+		
+		if(logDiv.style.display == "none")
+		{
+			logDiv.style.display = "block";
+			o.value = "hide debug";
+		}
+		else
+		{
+			logDiv.style.display = "none";
+			o.value = "show debug";
+		}
+			
+	};
 
 
 function xmlHttp_callback() 
@@ -53,6 +66,25 @@ function xmlHttp_callback()
     bCallBusyLock = false;
 }
 
+function log(s,color)
+{
+    var divLog =  TheUte().findElement("divLog","div");
+    if(divLog != null)
+    {
+        divLog.innerHTML = s + "<br />" + divLog.innerHTML;
+        if(color != null)
+        	divLog.style.backgroundColor = color;
+    }
+}
+
+function trace(s)
+{
+ var divLog =  TheUte().findElement("divLog","div");
+    if(divLog != null)
+        divLog.innerHTML += s;    
+
+}
+
 function processResponse(res)
 {
 
@@ -66,8 +98,8 @@ function processResponse(res)
      catch(e)
      {
        //$to do: understand what the error was.
-       log("RESPONSE eval() error :: " + e.description , 'red');
-       log("JSON response RECIEVED <<" + res + ">> ");
+       log("RESPONSE eval() error :: " + e.description , 'black');
+       log("JSON response RECIEVED was this <<" + res + ">> ");
        return;
        
      }
@@ -96,7 +128,7 @@ function executeLocalCommand(macro)
     	
     }
     
-
+    //alert("about to eval in executeLocalCommand :: [" + s + "]" );
     var s = "cmd" + macro.name + "(macro);";
     
     eval(s);
@@ -105,7 +137,7 @@ function executeLocalCommand(macro)
 
 function processJSON(macro)
 {
-	// entry point to the PYTHON PEER
+	//PYTHON PEER
 	
 	
 	 if(bCallBusyLock == true || gDisableAJAXcalls == true)
@@ -199,7 +231,7 @@ function processRequestAsString(macro)
 
 function processRequest(macro)
 {
-	//entry point C# .NET PEER
+	//.NET PEER
 	
     if(bCallBusyLock == true || gDisableAJAXcalls == 1)
     {
@@ -482,53 +514,7 @@ function parameter()
 
 
 
-
-toggleLog = function(o)
-	{
-		var logDiv = document.getElementById("divLog");
-		
-		if(logDiv.style.display == "none")
-		{
-			logDiv.style.display = "block";
-			o.value = "hide debug";
-		}
-		else
-		{
-			logDiv.style.display = "none";
-			o.value = "show debug";
-		}
-			
-	};
-
-
-
-
-function log(s,color)
-{
-    var divLog =  TheUte().findElement("divLog","div");
-    if(divLog != null)
-    {
-        divLog.innerHTML = s + "<br />" + divLog.innerHTML;
-        if(color != null)
-        	divLog.style.backgroundColor = color;
-    }
-}
-
-function trace(s)
-{
- var divLog =  TheUte().findElement("divLog","div");
-    if(divLog != null)
-        divLog.innerHTML += s;    
-
-}
-
 // some core functions for logging etc
-
-
-
-
-
-
 
 var statusBarRef = null;
 var historyDivRef = null;
