@@ -1,15 +1,24 @@
-"""
-    AgentIdea Framework
-    core
-"""
-
-
 import sys
 import config
 import error
 
+def printList(list):
+    for item in list:
+        print item
+ 
+    
 
 
+def pack(what):
+    import urllib
+    s = what.encode('base64','strict')
+    return urllib.quote(s)
+
+def unpack(what):
+    import urllib
+    s = urllib.unquote(what)
+    return s.decode('base64','strict')
+      
 def log(s):
     import os.path 
     
@@ -59,35 +68,6 @@ def log(s):
         
     return str(dt)
 
-
-def printList(list):
-    for item in list:
-        print item
- 
-
-    
-def info(object, spacing=10, collapse=1):
-    """Print methods and doc strings.
-    
-    Takes module, class, list, dictionary, or string."""
-    methodList = [e for e in dir(object) if callable(getattr(object, e))]
-    processFunc = collapse and (lambda s: " ".join(s.split())) or (lambda s: s)
-    print "\n".join(["%s %s" %
-                     (method.ljust(spacing),
-                      processFunc(str(getattr(object, method).__doc__)))
-                     for method in methodList])
-
-def pack(what):
-    import urllib
-    s = what.encode('base64','strict')
-    return urllib.quote(s)
-
-def unpack(what):
-    import urllib
-    s = urllib.unquote(what)
-    return s.decode('base64','strict')
-      
-
      
 # http://code.activestate.com/recipes/576750-pretty-print-xml/   
 prettyPrint = lambda dom: '\n'.join([line for line in dom.toprettyxml(indent=' '*2).split('\n') if line.strip()])
@@ -99,17 +79,28 @@ def ConvertDictToString(d):
     return ''.join(["'%s':%s\r\n" % item for item in d.iteritems()])
 
 
-def processCommand(cmd,commandDefaultTuple = None):
+def info(object, spacing=10, collapse=1):
+    """Print methods and doc strings.
+    
+    Takes module, class, list, dictionary, or string."""
+    methodList = [e for e in dir(object) if callable(getattr(object, e))]
+    processFunc = collapse and (lambda s: " ".join(s.split())) or (lambda s: s)
+    print "\n".join(["%s %s" %
+                     (method.ljust(spacing),
+                      processFunc(str(getattr(object, method).__doc__)))
+                     for method in methodList])
+
+def processCommand(cmd,commandCoreTuple = None):
     """ processess a Command dynamically """
     moduleID = None
     klassID = None
     
-    if(commandDefaultTuple == None):
-        moduleID = config.commandDefaultTuple[0]
-        klassID =  config.commandDefaultTuple[1] + cmd.name
+    if(commandCoreTuple == None):
+        moduleID = config.commandCoreTuple[0]
+        klassID =  config.commandCoreTuple[1] + cmd.name
     else:
-        moduleID = commandDefaultTuple[0]
-        klassID =  commandDefaultTuple[1] + cmd.name
+        moduleID = commandCoreTuple[0]
+        klassID =  commandCoreTuple[1] + cmd.name
     
     
     #log("LOAD Python Class -- %s.%s" % (moduleID,klassID))
@@ -204,7 +195,11 @@ class Command(object):
         
     
     def toJSON(self):
-
+        """
+{"name":"GetInputs","paramCount":0,"parameters":[{"name":"template","value":"testTemplate_v1.xls"},{"name":"datasetID","value":"ds1"}],
+"UserCurrentTxID":"not_set_yet"}        
+        
+        """
         x = len(self._parameterList)
         
         s = ""
@@ -270,6 +265,35 @@ class ReturnEnvelope(object):
         s += "}"
         
         return s
+        
+
+
+
+class TreeNode_v1(object):
+    def __init__(self,_index):
+        self.children = []
+        self.parent = None
+        self.depth = -1
+        self.index = _index
+        
+    def _hasChildren(self):
+        ret = False
+        if self.children.__len__() > 0:
+            ret = False
+        else:
+            ret = True
+            
+        return ret
+
+    def addNode(self,node):
+        node.parent = self
+        self.children.append(node)
+    
+    def getNumberChildren(self):
+        return len(self.children)
+    
+    childCount = property(getNumberChildren)
+    hasChildren = property(_hasChildren)
     
     
         

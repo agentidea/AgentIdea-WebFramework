@@ -1,9 +1,16 @@
-AgentIdea Framework
+core folder for AgentIdea Framework files
 
-Command oriented client - server system
 
-First addition: JavaScript webclient & Python Server Peers
+Issues with this code can be addressed by emailing Authors
 
-Current Protocol - http/https
-
-Opensource project: https://github.com/agentidea/AgentIdea-WebFramework
+ Grant Steinfeld := GrantSteinfeld<at>gmail.com
+ Oren Kredo := Oren.Kredo<at>gmail.com
+ 
+ 
+ OpenSource Project at http://www.github.com/agentidea
+ https://agentidea@github.com/agentidea/AgentIdea-WebFramework.git
+ 
+ 
+ 
+ report any issues to us on Twitter http://www.twitter.com/agentidea
+ 

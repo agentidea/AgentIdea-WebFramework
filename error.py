@@ -1,8 +1,3 @@
-"""
-    AgentIdea Framework
-    error
-"""
-
 class MongoDocNotFoundException(Exception):
     def __init__(self,value):
         self.value = value
