@@ -13,11 +13,11 @@ var SYNC = false;
 var gDisableAJAXcalls = false;
 var bCallBusyLock = false;
 
-//var dest = "localhost";
-var dest = "184.106.112.115";
+var dest = "localhost";
+//var dest = "184.106.112.115";
 
-//var url = "http://"+ dest +"/DieTafel/processor2.py";
-var url =  "http://"+ dest +"/table";
+var url = "http://"+ dest +"/DieTafel/processor2.py";
+//var url =  "http://"+ dest +"/table";
 
 	toggleLog = function(o)
 	{
