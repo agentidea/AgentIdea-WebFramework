@@ -7,7 +7,11 @@ def printList(list):
         print item
  
     
-
+def ParseMacroDict(macro):
+    cmd = Command(macro['name'])
+    for param in macro['parameters']:
+        cmd.addParameter(param['name'], param['value'])
+    return cmd
 
 def pack(what):
     import urllib
@@ -74,8 +78,8 @@ prettyPrint = lambda dom: '\n'.join([line for line in dom.toprettyxml(indent=' '
 
 
 def ConvertDictToString(d):
-    from pprint import pprint 
-    pprint(d)
+    #from pprint import pprint 
+    #pprint(d)
     return ''.join(["'%s':%s\r\n" % item for item in d.iteritems()])
 
 
