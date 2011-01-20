@@ -30,9 +30,8 @@ dbUsr = ""
 
 appLogoImage = "cropped.jpg"
 nav = [
-      {'name':'new event','A':"ShowNewTableForm('west');"},
+       {'name':'new event','A':"ShowNewTableForm('west');"},
        {'name':'event admin','A':"ShowEvents('west');"},
-       {'name':'guest books','A':"log('guesbook');"},
        {'name':'about us','A':"ShowAbout('west');"},
        ]
 
