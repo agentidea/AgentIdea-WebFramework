@@ -4,12 +4,13 @@ import json
 import time
 
 #tafel
+#to do: path append issues ...
 sys.path.append('C:\inetpub\wwwroot\\net4\pyInetPub\DieTafel\core\src')
 
 import core
 
 """
-
+       Windows IIS ISAPI pyISAPIe entry point
        POST to XML-RPC interface to BASE64 encoded Macro requests
        expect call from XMLHTTP object in Firefox or MSXMLHTTP in IE
 """
