@@ -1,3 +1,4 @@
+import os
 """
     Configuration File v1
 """
@@ -38,8 +39,10 @@ nav = [
 
 
 LogPath ="C:\inetpub\wwwroot\\net4\pyInetPub\DieTafel\core\src\logs"
+#LogPath = "/var/wsgi/tafel/log
+
 Log = "pyLog.txt"
-LogFile = "{0}\{1}".format(LogPath,Log)
+LogFile = "{0}{1}{2}".format(LogPath,os.pathsep,Log)
 
 
 #command on load string JS as base 64
