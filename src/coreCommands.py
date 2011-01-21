@@ -15,8 +15,10 @@ class cmdShowAbout:
         core.log("IN command %s" % (command.name))
         panel = command.getValue("panel")
         s = "<div class='clsPanel'>"
-        s += "<b>About information</b>"
+        s += "<b>Information about this Application</b>"
         s += "<div class='clsAbout'>{0} ver {1}.{2}.{3}</div>".format(config.appName,config.versionMajor,config.versionMinor,config.versionRevision)
+        s += "<div class='clsAbout'>db://{0}:{1} db name: {2}</div>".format(config.dbIP,config.dbPort,config.dbDefault)
+        s += "<div class='clsAbout'>logging to {0} path</div>".format(config.LogFile)
         s += "</div>"
         
         re = core.ReturnEnvelope()
@@ -152,13 +154,15 @@ class cmdShowEvents:
         allEvents = db.find_all(config.dbDefault, config.rootTableCollectionName)
         
         s = "<table>"
-        s += "<tr>"
-        s += "<td>Table Number</td><td>location</td><td>city</td><td># guests</td>"
+        s += "<tr class='clsGridHeaderRow'>"
+        s += "<td>Table Number</td><td>location</td><td>city</td><td># guests</td><td># hosts</td><td colspan='2'>actions</td>"
         s += "</tr>"
         
+        
+        
         for ev in allEvents:
-            s += "<tr>"
-            s += "<td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td><input class='clsGridButton' type='button' value='delete' id='{4}' onclick=\"DeleteEvent(this,'{5}');\" /></td><td><input class='clsGridButton' type='button' id='{4}' value='ProcessInvites' onclick='ProcessInvites(this,\"{5}\");' /></td>".format(ev['tableNumber'],ev['location']['name'],ev['location']['city'],len(ev['guests']),ev['_id'],panel)
+            s += "<tr class='clsGridRow'>"
+            s += "<td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}<td><input class='clsGridButton' type='button' value='delete' id='{5}' onclick=\"DeleteEvent(this,'{6}');\" /></td><td><input class='clsGridButton' type='button' id='{5}' value='ProcessInvites' onclick='ProcessInvites(this,\"{6}\");' /></td>".format(ev['tableNumber'],ev['location']['name'],ev['location']['city'],len(ev['guests']),len(ev['hosts']),ev['_id'],panel)
             s+= "</tr>"
         
         
