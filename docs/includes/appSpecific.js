@@ -293,7 +293,16 @@ function TableCreateForm(attachPoint)
 	};
 	
 	
-	var _saveCmd = TheUte().getButton("cmdSave","save","save this event",null,"clsActionButton");
+	var _saveCmd = TheUte().getButton("cmdSave","save table","save this table",null,"clsActionButton");
+	var _cancelCmd = TheUte().getButton("cmdCancel","cancel","cancel out of this screen",null,"clsActionButton");
+	
+	_cancelCmd.onclick = function()
+	{
+	
+		resetTable(tmpTable);
+		location.href = location.href;
+	
+	};
 	
 	_saveCmd.onclick = function()
 	{
@@ -349,15 +358,23 @@ function TableCreateForm(attachPoint)
 	var _dvGuests = document.createElement('DIV');
 	_dvGuests.className = 'clsPanelHead';
 	
-	var _lblHosts = document.createTextNode('hosts');
-	var _lblGuests = document.createTextNode('guests');
+	var _lblHosts = document.createTextNode('Hosts');
+	var _lblGuests = document.createTextNode('Guests');
+	var dvLblHosts = document.createElement("DIV");
+	var dvLblGuests = document.createElement("DIV");
+	dvLblHosts.className = "clsH5";
+	dvLblGuests.className = "clsH5";
+	dvLblHosts.title = "click here to add a new host";
+	dvLblGuests.title = "click here to add a new guest";
+	
 	
 	var spanAddHost = document.createElement('SPAN');
 	spanAddHost.className = 'clsAdd';
-	var lblAddHost = document.createTextNode('+');
+	var lblAddHost = document.createTextNode('add a new host');
 	spanAddHost.appendChild(lblAddHost);
 	
-	_dvHosts.appendChild(spanAddHost);
+	dvLblHosts.appendChild(spanAddHost);
+	_dvHosts.appendChild(dvLblHosts);
 	_dvHosts.appendChild(_lblHosts);
 	
 	spanAddHost.onclick = function()
@@ -370,11 +387,12 @@ function TableCreateForm(attachPoint)
 	
 
 	var spanAddGuest = document.createElement('SPAN');
-	var lblAddGuest = document.createTextNode('+');
+	var lblAddGuest = document.createTextNode('add a new guest');
 	spanAddGuest.appendChild(lblAddGuest);
 	spanAddGuest.className = 'clsAdd';
 	
-	_dvGuests.appendChild(spanAddGuest);
+	dvLblGuests.appendChild(spanAddGuest);
+	_dvGuests.appendChild(dvLblGuests);
 	_dvGuests.appendChild(_lblGuests);
 	spanAddGuest.onclick = function()
 	{
@@ -416,17 +434,15 @@ function TableCreateForm(attachPoint)
 	vals.push( _txtTableCountry);
 	
 	
-
-
-
+	
 	
 	vals.push( _dvHosts );
 	vals.push( _dvGuests );
 
-	vals.push( null);
+	vals.push( _cancelCmd );
 	vals.push(_saveCmd);
 
-	var g = newGrid2('tableCreationGrid',vals.length/2,2,vals);
+	var g = newGrid2('tableCreationGrid',vals.length/2,2,vals,0);
 	g.init(g);
 
 	attachPoint.appendChild( g.gridTable );
