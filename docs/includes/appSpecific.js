@@ -53,7 +53,26 @@ var User = {
 };
 
 
+function resetTable(t)
+{
+	t.tableNumber = -1;
+	t.name = "";
+	t.description = null;
+	t.location.name = null;
+	t.location.street = null;
+	t.location.street = null;
+	t.location.zip = null;
+	t.location.state = null;
+	t.location.city = null;
+	t.location.url = null;
+	t.date = null;
+	t.time = null;
+	t.hosts = [];
+	t.guests = [];
+	
+	log("reset table");
 
+}
 
 
 function validate(userList)
@@ -292,6 +311,7 @@ function TableCreateForm(attachPoint)
 			
 			var tableJSON64 = TheUte().encode64( tableJSON );
 			
+			resetTable(tmpTable);
 			var SaveNewEvent = newMacro("SaveNewEvent");
 			addParam(SaveNewEvent,"table64",tableJSON64);
 			addParam(SaveNewEvent,"panel",attachPoint.id);
