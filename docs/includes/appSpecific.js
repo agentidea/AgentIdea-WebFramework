@@ -4,27 +4,32 @@
 
 */
 
-var TABLE = {
 
-	'tableNumber':-1,
-	'name':'',
-	'description':null,
-	'location':{
-		'name':null,
-		'street':null,
-		'street2':null,
-		'zip':null,
-		'state':null,
-		'city':null,
-		'country':null,
-		'url':null
-	},
-	'date':null,
-	'time':null,
-	'hosts':[],
-	'guests':[]
 
-};
+
+// DECLARE global TABLE
+var gTABLE;
+if(!gTABLE){
+	var gTABLE = {
+		'tableNumber':-1,
+		'description':null,
+		'location':{
+			'venue':null,
+			'street':null,
+			'street2':null,
+			'zip':null,
+			'state':null,
+			'city':null,
+			'country':null,
+			'url':null
+		},
+		'date':null,
+		'time':null,
+		'hosts':[],
+		'guests':[]
+	
+	};
+}
 
 
 var UserStates = {
@@ -56,11 +61,10 @@ var User = {
 function resetTable(t)
 {
 	t.tableNumber = -1;
-	t.name = "";
 	t.description = null;
-	t.location.name = null;
+	t.location.venue = null;
 	t.location.street = null;
-	t.location.street = null;
+	t.location.street2 = null;
 	t.location.zip = null;
 	t.location.state = null;
 	t.location.city = null;
@@ -74,10 +78,65 @@ function resetTable(t)
 
 }
 
-
-function validate(userList)
+function validateTable(t)
 {
 
+	if(t.location.venue == null || t.location.venue.trim().length == 0)
+	{
+		return "venue required";
+	}
+	if(t.date == null || t.date.trim().length == 0)
+	{
+		return "date required";
+	}
+	
+	if(t.time == null || t.time.trim().length == 0)
+	{
+		return "time required";
+	}
+	
+	if(t.location.street == null || t.location.street.trim().length == 0)
+	{
+		return "street required";
+	}
+
+	if(t.location.city == null || t.location.city.trim().length == 0)
+	{
+		return "city required";
+	}
+	
+	if(t.location.state == null || t.location.state.trim().length == 0)
+	{
+		return "state or region required";
+	}
+	
+	if(t.location.zip == null || t.location.zip.trim().length == 0)
+	{
+		return "zip or postal code required";
+	}
+	
+	if(t.location.zip == null || t.location.zip.trim().length == 0)
+	{
+		return "country required";
+	}
+
+	
+	if(t.hosts.length == 0)
+	{
+		return "table requires at least one host";
+	}
+	
+	if(t.guest.length == 0)
+	{
+		return "table requires at least one guest";
+	}
+
+	return "";
+
+}
+
+function validateUsers(userList)
+{
 	for ( user in userList )
 	{
 		var tmpUser = userList[user];
@@ -97,15 +156,12 @@ function validate(userList)
 		}
 		else
 		{
-			//to do validate email ....
+			//to do validInputBox email ....
 		
 		}
-	
 	}
 	
 	return true;
-
-
 }
 
 function UserCreateForm(attachPoint,user,list)
@@ -209,11 +265,34 @@ function ShowNewTableForm(panel)
 }
 
 
+function validInputBox( inputBox, warnMsg)
+{
+
+		var val = inputBox.value.trim();
+		
+		if(val.length > 0)
+		{
+			
+			//inputBox.className = 'clsCellValid'; 
+			inputBox.style.backgroundColor = "#ffffff";
+			displayMsg();
+			return true;
+		}
+		else
+		{
+			
+		    //inputBox.className = 'clsCellInvalid'; 
+			displayMsg(warnMsg, msgCode.warn);
+			
+			//inputBox.focus();  //causes endless loop when focusing into another cell that requires validateion!!!
+			inputBox.style.backgroundColor = "#ffcc99";
+			return false;
+		}
+}
+
 function TableCreateForm(attachPoint)
 {
 
-	//var tmpTable = Object.create(TABLE);
-	var tmpTable = TABLE;
     
     var _lblPageHeader = document.createTextNode('Create New Event');
     var _dvPageHeader = document.createElement('DIV');
@@ -221,74 +300,168 @@ function TableCreateForm(attachPoint)
     _dvPageHeader.appendChild(_lblPageHeader);
     
     
-	var _txtTableLocation = TheUte().getInputBox('','txtTableLocation',null,null,'clsInput','location');
+	var _txtTableLocation = TheUte().getInputBox('','txtTableLocation',null,null,'clsInput','venue');
+	
+	/*
 	_txtTableLocation.onblur = function()
 	{
-		tmpTable.location.name = this.value;
+		if( validInputBox( _txtTableLocation,'location field is required, please enter a valid string') )
+		{
+			gTABLE.location.venue = _txtTableLocation.value;
+			log("setting to :" + gTABLE.location.venue );
+		}
 	};
+
+		('location','venue','venue field is required')
+		
+		
+		*/
+		
+	if( typeof _txtTableLocation.addEventListener != 'function') {
+		//ie
+		(function(ttt){
+			
+			ttt.attachEvent('onblur', function(){
+				 
+				if( validInputBox( ttt,'venue field is required, please enter a valid string') )
+				{
+					gTABLE['location']['venue'] = ttt.value;
+				}
+				
+				}, false);
+			
+		})(_txtTableLocation);
+		
+	
+	}
+	else {
+		//mozilla
+		(function(ttt){
+			
+			ttt.addEventListener('blur', function(){
+				
+				if( validInputBox( ttt,'venue field is required, please enter a valid string') )
+				{
+					gTABLE['location']['venue'] = ttt.value;
+					
+				}
+				
+				}, false);
+			
+		})(_txtTableLocation);
+	
+	}
+	
+	
+	
+		
+	
 	
 	var _txtTableStreet = TheUte().getInputBox('','txtTableStreet',null,null,'clsInput','street');
-	_txtTableStreet.onblur = function()
-	{
-		tmpTable.location.street = this.value;
 	
-	};
+		
+	if( typeof _txtTableStreet.addEventListener != 'function') {
+		//ie
+		(function(ttt){
+			
+			ttt.attachEvent('onblur', function(){
+				 
+				if( validInputBox( ttt,'first line of street information is required') )
+				{
+					gTABLE.location.street = ttt.value;
+				}
+				
+				}, false);
+			
+		})(_txtTableStreet);
+		
+	
+	}
+	else {
+		//mozilla
+		(function(ttt){
+			
+			ttt.addEventListener('blur', function(){
+				
+				if( validInputBox( ttt,'first line of street information is required') )
+				{
+					gTABLE.location.street = ttt.value;
+					
+				}
+				
+				}, false);
+			
+		})(_txtTableStreet);
+	
+	}
+	
+	//
+	// the direct .onblur seems to work ???
+	//
+	
 	var _txtTableStreet2 = TheUte().getInputBox('','txtTableStreet2',null,null,'clsInput','street 2');
 	_txtTableStreet2.onblur = function()
 	{
-		tmpTable.location.street2 = this.value;
+		gTABLE.location.street2 = _txtTableStreet2.value;
 	
 	};
 	
 	var _txtTableCity = TheUte().getInputBox('','txtTableCity',null,null,'clsInput','city');
 	_txtTableCity.onblur = function()
 	{
-		tmpTable.location.city = this.value;
+		if(validInputBox(_txtTableCity,'city is required'))
+			gTABLE.location.city = _txtTableCity.value;
 	
 	};
 	var _txtTableState = TheUte().getInputBox('','txtTableState',null,null,'clsInput','state');
 	_txtTableState.onblur = function()
 	{
-		tmpTable.location.state = this.value;
-	
+		if(validInputBox(_txtTableState,'state or province or region is required'))
+			gTABLE.location.state = _txtTableState.value;
 	};
 	var _txtTableZip = TheUte().getInputBox('','txtTableZip',null,null,'clsInput','zip/postal code');
 	_txtTableZip.onblur = function()
 	{
-		tmpTable.location.zip = this.value;
+		if(validInputBox(_txtTableZip,'zip or postal code required'))
+			gTABLE.location.zip=_txtTableZip.value;
+			
 	
 	};
 	var _txtTableCountry = TheUte().getInputBox('','txtTableCountry',null,null,'clsInput','country');
 	_txtTableCountry.onblur = function()
 	{
-		tmpTable.location.country = this.value;
+		if(validInputBox(_txtTableCountry,'country is required'))
+			gTABLE.location.country = _txtTableCountry.value;
 	
 	};
 	var _txtTableURL = TheUte().getInputBox('','txtTableURL',null,null,'clsInput','event location website');
 	_txtTableURL.onblur = function()
 	{
-		tmpTable.location.url = this.value;
+		gTABLE.location.url = _txtTableURL.value;
 	
 	};
 	
 	var _txtTableDate = TheUte().getInputBox('','txtTableDate',null,null,'clsInput','date');
 	_txtTableDate.onblur = function()
 	{
-		tmpTable.date = this.value;
+		if(validInputBox(_txtTableDate,'date is required'))
+			gTABLE.date = _txtTableDate.value;
+			
 	
 	};
 	
 	var _txtTableTime = TheUte().getInputBox('','txtTableTime',null,null,'clsInput','time');
 	_txtTableTime.onblur = function()
 	{
-		tmpTable.time = this.value;
+		if(validInputBox(_txtTableTime,'time is required'))
+			gTABLE.time = _txtTableTime.value;
 	
 	};
 	
 	var _txtTableDescription  = TheUte().getTextArea('','txtTableDescription',null,null,'clsTextArea');
 	_txtTableDescription.onblur = function()
 	{
-		tmpTable.description = this.value;
+		gTABLE.description = _txtTableDescription.value;
 	
 	};
 	
@@ -299,39 +472,53 @@ function TableCreateForm(attachPoint)
 	_cancelCmd.onclick = function()
 	{
 	
-		resetTable(tmpTable);
+		resetTable(gTABLE);
 		location.href = location.href;
 	
 	};
 	
 	_saveCmd.onclick = function()
 	{
-	
+		
+		
+		
+		//var errs = validateTable(gTABLE);
+		var errs = "";
+		
+		//log("saving" + errs);
+		
 		//reflect through form and get as JSON;
-		var tableJSON = JSON.stringify(tmpTable);
-		
-		// $to do:  validate table form here 
-		
-		
-		if( (validate(tmpTable.hosts) == true) &&  (validate(tmpTable.guests) == true) )
-		{
-			log("passed validation, save ...");
-			log(tableJSON);
-			
-			var tableJSON64 = TheUte().encode64( tableJSON );
-			
-			resetTable(tmpTable);
-			var SaveNewEvent = newMacro("SaveNewEvent");
-			addParam(SaveNewEvent,"table64",tableJSON64);
-			addParam(SaveNewEvent,"panel",attachPoint.id);
-			processJSON(SaveNewEvent);
+		var tableJSON = JSON.stringify(gTABLE);
 
+		if(errs.trim().length == 0)
+		{
+		
+			if( (validateUsers(gTABLE.hosts) == true) &&  (validateUsers(gTABLE.guests) == true) )
+			{
+				log("passed validation, save ...");
+				log(tableJSON);
+				
+				
+				var tableJSON64 = TheUte().encode64( tableJSON );
+				
+				resetTable(gTABLE);
+				
+				var SaveNewEvent = newMacro("SaveNewEvent");
+				addParam(SaveNewEvent,"table64",tableJSON64);
+				addParam(SaveNewEvent,"panel",attachPoint.id);
+				processJSON(SaveNewEvent);
+	
+			}
+			else
+			{
+				displayMsg("Please check host/guest information for missing data",msgCode.warn);
+			}
+		
 		}
 		else
 		{
-			alert("Please check host/guest information for missing data");
+			displayMsg("" + errs, msgCode.warn);
 		}
-		
 		
 		//log(tableJSON);
 		
@@ -340,7 +527,7 @@ function TableCreateForm(attachPoint)
 	
 	var _dvTableLocation = document.createElement('DIV');
 	
-	var _lblTableLocation = document.createTextNode('location');
+	var _lblTableLocation = document.createTextNode('venue');
 	var _lblTableStreet = document.createTextNode('street');
 	var _lblTableStreet2 = document.createTextNode('street 2');
 	
@@ -381,8 +568,8 @@ function TableCreateForm(attachPoint)
 	{
 		var tmpUser = Object.create(User);
 		tmpUser.state = UserStates.host;
-		tmpTable.hosts.push(tmpUser);
-		UserCreateForm(_dvHosts,tmpUser,tmpTable.hosts);
+		gTABLE.hosts.push(tmpUser);
+		UserCreateForm(_dvHosts,tmpUser,gTABLE.hosts);
 	};
 	
 
@@ -398,8 +585,8 @@ function TableCreateForm(attachPoint)
 	{
 		var tmpUser = Object.create(User);
 		tmpUser.state = UserStates.init;
-		tmpTable.guests.push(tmpUser);
-		UserCreateForm(_dvGuests,tmpUser,tmpTable.guests);
+		gTABLE.guests.push(tmpUser);
+		UserCreateForm(_dvGuests,tmpUser,gTABLE.guests);
 	};
 
 	var vals = new Array();
@@ -410,13 +597,10 @@ function TableCreateForm(attachPoint)
 	vals.push(_dvTableLocation.appendChild(_lblTableLocation));
 	vals.push(_txtTableLocation);
 	
-	vals.push( _lblTableDescription );
-	vals.push( _txtTableDescription );
+	//vals.push( _lblTableDescription );
+	//vals.push( _txtTableDescription );
 	
-	vals.push( _lblTableDate );
-	vals.push( _txtTableDate );
-	vals.push( _lblTableTime );
-	vals.push( _txtTableTime );
+	
 	
 	
 	vals.push( _lblTableStreet );
@@ -434,6 +618,11 @@ function TableCreateForm(attachPoint)
 	vals.push( _txtTableCountry);
 	
 	
+	vals.push( _lblTableDate );
+	vals.push( _txtTableDate );
+	vals.push( _lblTableTime );
+	vals.push( _txtTableTime );
+	
 	
 	
 	vals.push( _dvHosts );
@@ -446,6 +635,13 @@ function TableCreateForm(attachPoint)
 	g.init(g);
 
 	attachPoint.appendChild( g.gridTable );
+	
+	
+
+	
+	
+	
+
 	
 	_txtTableLocation.focus();
 }
@@ -476,11 +672,12 @@ function InviteMx(objTable, attachPoint)
 	for(host in objTable.hosts)
 	{
 		s += " " + objTable.hosts[host].firstName;
-		s += " & ";
+		s += " &";
 		
 	}
 	
 	//remove last &
+	s = s.trim().substring(0,s.length-1);
 	
 	var _txtInvite  = TheUte().getTextArea(s,'txtInvite',null,null,'clsTextArea');
 	_txtInvite.className = "clsInvite";
@@ -509,3 +706,16 @@ function InviteMx(objTable, attachPoint)
 
 
 }
+
+
+
+
+
+
+
+//drek
+/*
+
+
+	
+*/
