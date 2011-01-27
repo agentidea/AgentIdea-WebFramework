@@ -19,6 +19,18 @@ var dest = "localhost";
 var url = "http://"+ dest +"/DieTafel/processor2.py";
 //var url =  "http://"+ dest +"/table";
 
+
+
+//----------------------------------------------------- delegate
+// call a function forced to a specific scope
+function delegate(scope, method, overrideArguments){
+  return function(){
+    var args = (overrideArguments)?overrideArguments:arguments;
+    return method.apply(scope, args);
+  }
+}
+
+
 	toggleLog = function(o)
 	{
 		var logDiv = document.getElementById("divLog");
@@ -65,6 +77,70 @@ function xmlHttp_callback()
     
     bCallBusyLock = false;
 }
+
+var msgCode = {
+
+	high: { color : "red", background : "white" },
+	warn: { color : "yellow", background : "black" },
+	error: { color : "red", background : "black" },
+	normal: { color : "black", background : "white" },
+	info: { color : "blue", background : "white" }
+
+};
+
+function displayMsg(s,severity)
+{
+	//expects optional severity object like msgCode.warn
+	if(!severity){ severity = msgCode.normal; }
+
+	if(s == null) s = "";
+	
+ 	var dvMessage =  TheUte().findElement("dvMessage","div");
+    if(dvMessage != null)
+    {
+        dvMessage.innerHTML = s + "<br />";
+        
+        if(severity != null)
+        {
+        	dvMessage.style.backgroundColor = severity.background;
+        	dvMessage.style.color = severity.color;
+        }
+        else
+        {
+        	dvMessage.style.backgroundColor = "transparent";
+        	dvMessage.style.color = "transparent";
+        
+        }
+    }
+}
+
+	ClearMessages = function(){
+	
+		displayMsg("");
+	
+	};
+	
+	WriteToPanel = function(panel,s)
+	{
+	  var oPanel = document.getElementById(panel);
+	  if(oPanel != null)
+	  {
+	  	oPanel.innerHTML = s;
+	  }
+	
+	};
+	
+	ClearBottomPanels = function()
+	{
+		WriteToPanel('north','');
+		WriteToPanel('south','');
+		WriteToPanel('east','');
+		WriteToPanel('west','');
+	
+	};
+
+
+
 
 function log(s,color)
 {

@@ -3,24 +3,7 @@
 //
 
 
-	WriteToPanel = function(panel,s)
-	{
-	  var oPanel = document.getElementById(panel);
-	  if(oPanel != null)
-	  {
-	  	oPanel.innerHTML = s;
-	  }
 	
-	};
-	
-	ClearBottomPanels = function()
-	{
-		WriteToPanel('north','');
-		WriteToPanel('south','');
-		WriteToPanel('east','');
-		WriteToPanel('west','');
-	
-	};
 
 	ShowNavigation = function(panel)
 	{
@@ -29,10 +12,12 @@
 		processJSON(m);
 
 	};
+
 	
 	ShowEvents = function(panel)
 	{
 		ClearBottomPanels();
+		ClearMessages();
 		
 		var m = newMacro("ShowEvents");
 		addParam(m,"panel",panel);
@@ -45,6 +30,7 @@
 	ShowAbout = function(panel)
 	{
 		ClearBottomPanels();
+		ClearMessages();
 		
 		var m = newMacro("ShowAbout");
 		addParam(m,"panel",panel);
@@ -52,24 +38,37 @@
 	
 	};
 	
-	ProcessInvites = function(button, panel)
+	ProcessInvites = function(button, id,panel)
 	{
 		ClearBottomPanels();
-		
-		log(panel);
-		log(button.id);
-		
+		ClearMessages();
+
 		var m = newMacro("ProcessInvites");
 		addParam(m,"panel",panel);
-		addParam(m,"table_id",button.id);
+		addParam(m,"table_id",id);
 		processJSON(m);
 	
 	};
 	
 	
-	
-	DeleteEvent = function(button, panel)
+	EditEvent = function(button,id, panel)
 	{
-		log("Delete event " + button.id);
+		alert("to follow ... Edit event " + id + " here");
+	
+	};
+	DeleteEvent = function(button,id, panel, tableName)
+	{
+	
+		var shouldDelete = confirm("Are you sure you want to delete table #" + tableName + "?");
+		if(shouldDelete)
+		{
+			ClearBottomPanels();
+			ClearMessages();
+			
+			var m = newMacro("DeleteEvent");
+			addParam(m,"panel",panel);
+			addParam(m,"table_id",id);
+			processJSON(m);
+		}
 	
 	};

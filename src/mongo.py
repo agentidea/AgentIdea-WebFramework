@@ -38,7 +38,12 @@ class MongoDBComponents(object):
         connection = self.getConnection()
         db = connection[db_id]
         db.drop_collection(collection_id)
-    
+        
+    def deleteDocument(self,db_id,collection_id,spec):
+        connection = self.getConnection()
+        db = connection[db_id]
+        db[collection_id].remove(spec)
+        
     def find_all(self,db_id,collection_id):
         connection = self.getConnection()
         db = connection[db_id]

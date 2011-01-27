@@ -5,7 +5,8 @@ import time
 
 #tafel
 #to do: path append issues ...
-sys.path.append('C:\inetpub\wwwroot\\net4\pyInetPub\DieTafel\core\src')
+
+sys.path.append("C:\inetpub\wwwroot\\net4\pyInetPub\\DieTafel\core\src\src")
 
 import core
 

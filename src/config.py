@@ -5,9 +5,9 @@ import os
 
 versionMajor = 0
 versionMinor = 4
-versionRevision = 5
+versionRevision = 7
 
-appName = "tafel"
+appName = "Table"
 
 ClientID = "demo"
 dbDefault = "tafel"
@@ -30,18 +30,20 @@ dbUsr = ""
 
 appLogoImage = "cropped.jpg"
 nav = [
-       {'name':'new event','A':"ShowNewTableForm('west');"},
+       {'name':'new event','A':"APP.showNewTableForm('west');"},
        {'name':'event admin','A':"ShowEvents('west');"},
-       {'name':'about us','A':"ShowAbout('west');"},
+       {'name':'about','A':"ShowAbout('west');"},
        ]
 
 
 
-LogPath ="C:\inetpub\wwwroot\\net4\pyInetPub\DieTafel\core\src\logs"
-#LogPath = "/var/wsgi/tafel/log
+LogPath ="C:\inetpub\wwwroot\\net4\pyInetPub\DieTafel\core\src\log"
+PathSep = '\\'
+#LogPath = "/var/wsgi/tafel/log"
+#PathSep = '/'
 
 Log = "pyLog.txt"
-LogFile = "{0}{1}{2}".format(LogPath,os.pathsep,Log)
+LogFile = "{0}{1}{2}".format(LogPath,PathSep,Log)
 
 
 #command on load string JS as base 64

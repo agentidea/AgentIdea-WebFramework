@@ -26,6 +26,20 @@ String.prototype.rtrim = function() {
 	return this.replace(/\s+$/,"");
 }
 
+String.prototype.startsWith = function(pattern) {
+	return (this.match("^"+pattern)==pattern)
+}
+
+String.prototype.pullRest = function(pattern) {
+	if( this.startsWith ) {
+		return this.substring(pattern.length,this.length);
+	}
+	else
+	{
+		return "";
+	}
+}
+
 
 
 function getTuple(code) {

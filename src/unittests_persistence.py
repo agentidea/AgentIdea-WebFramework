@@ -17,7 +17,7 @@ class TestDBfunctions(unittest.TestCase):
         self.shouldPrintVerbose = True
 
         self.shouldSave = False
-        self.shouldPurge = False
+        self.shouldPurge = True
         self.saveTrees = False
         
         self.testTreeID = config.rootTableCollectionName

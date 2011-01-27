@@ -21,6 +21,12 @@
 
 }
 
+.clsInput
+{
+	
+		background-color:#ffffff;
+}
+
 .clsInvite
 {
 	width:500px;
@@ -163,6 +169,20 @@
   background-color:#e0e0e0;
 	
 }
+
+
+.clsCellInvalid
+{
+	backgournd-color:#CC1100;
+	color:white;
+}
+.clsCellValid
+{
+	background-color:#CAFF70;
+	color:black;
+}
+	
+
 
 .clsMsg
 {

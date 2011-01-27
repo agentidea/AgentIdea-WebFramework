@@ -8,7 +8,7 @@ import coreCommands
 class CommandTests(unittest.TestCase):
     
     def setUp(self):
-        #self.nodeToUse = '4d349e48f1e5841594000001'
+        pass
     
     def test_CoreCommandDirectExecution(self):
 
@@ -28,7 +28,7 @@ class CommandTests(unittest.TestCase):
     def test_CallingShowList(self):
 
         c = core.Command("ShowList")
-        c.addParameter("treeID",config.rootProjectTreeName)
+        c.addParameter("treeID",config.rootTableCollectionName)
         c.addParameter("collection","nodes.general")
         c.addParameter("panel","west")
 

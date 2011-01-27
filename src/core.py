@@ -24,6 +24,9 @@ def unpack(what):
     return s.decode('base64','strict')
       
 def log(s):
+    
+    return
+
     import os.path 
     
     logfile = None
@@ -61,9 +64,7 @@ def log(s):
             print "Unexpected file open A error: %s" % list(sys.exc_info())
             return
 
-    
-    
-        
+
         logfile.write(str(dt))
         logfile.write(" :: ")
         logfile.write(str(s))

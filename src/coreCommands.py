@@ -138,7 +138,7 @@ class cmdProcessInvites:
         loadJS = core.Command('LoadAppSpecificJS')
         loadJS.addParameter('panel', panel)
         loadJS.addParameter('JSON64', core.pack(tableJSON) )
-        loadJS.addParameter('JSmoduleToCall','InviteMx')
+        loadJS.addParameter('JSmoduleToCall','APP.inviteMx')
         re.add(loadJS)
         return re
 
@@ -153,16 +153,42 @@ class cmdShowEvents:
         db = mongo.MongoDBComponents(config.dbIP,config.dbPort)
         allEvents = db.find_all(config.dbDefault, config.rootTableCollectionName)
         
-        s = "<table>"
+        s = "<table border='0' cellspacing='0' cellpadding='5'>"
         s += "<tr class='clsGridHeaderRow'>"
-        s += "<td>Table Number</td><td>location</td><td>city</td><td># guests</td><td># hosts</td><td colspan='2'>actions</td>"
+        s += "<td>table #</td>"
+        s += "<td>venue</td>"
+        s += "<td>street</td>"
+        s += "<td>street2</td>"
+        s += "<td>city</td>"
+        s += "<td>state</td>"
+        s += "<td>zip</td>"
+        s += "<td>country</td>"
+        s += "<td>date</td>"
+        s += "<td>time</td>"
+        s += "<td>hosts</td>"
+        s += "<td>guests</td>"
+        s += "<td colspan='3'>actions</td>"
         s += "</tr>"
         
         
         
         for ev in allEvents:
             s += "<tr class='clsGridRow'>"
-            s += "<td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}<td><input class='clsGridButton' type='button' value='delete' id='{5}' onclick=\"DeleteEvent(this,'{6}');\" /></td><td><input class='clsGridButton' type='button' id='{5}' value='ProcessInvites' onclick='ProcessInvites(this,\"{6}\");' /></td>".format(ev['tableNumber'],ev['location']['name'],ev['location']['city'],len(ev['guests']),len(ev['hosts']),ev['_id'],panel)
+            s += "<td>{0}</td>".format(ev['tableNumber'])
+            s += "<td>{0}</td>".format(ev['location']['venue'])
+            s += "<td>{0}</td>".format(ev['location']['street'])
+            s += "<td>{0}</td>".format(ev['location']['street2'])
+            s += "<td>{0}</td>".format(ev['location']['city'])
+            s += "<td>{0}</td>".format(ev['location']['state'])
+            s += "<td>{0}</td>".format(ev['location']['zip'])
+            s += "<td>{0}</td>".format(ev['location']['country'])
+            s += "<td>{0}</td>".format(ev['meta']['date'])
+            s += "<td>{0}</td>".format(ev['meta']['time'])
+            s += "<td>{0}</td>".format(len(ev['hosts']))
+            s += "<td>{0}</td>".format(len(ev['guests']))
+            s += "<td><input class='clsGridButton' type='button' value='edit' id='cmd_{0}_edit' onclick=\"EditEvent(this,'{1}','{2}');\" /></td>".format(ev['tableNumber'],ev['_id'],panel)
+            s += "<td><input class='clsGridButton' type='button' value='delete' id='cmd_{0}_delete' onclick=\"DeleteEvent(this,'{1}','{2}','{3}');\" /></td>".format(ev['tableNumber'],ev['_id'],panel,ev['tableNumber'])
+            s += "<td><input class='clsGridButton' type='button' value='process invites' id='cmd_{0}_proc' onclick=\"ProcessInvites(this,'{1}','{2}');\" /></td>".format(ev['tableNumber'],ev['_id'],panel)
             s+= "</tr>"
         
         
@@ -215,6 +241,26 @@ class cmdSaveNewEvent:
         
         re.add(displayCmd)
         return re
+    
+    
+class cmdDeleteEvent:
+    
+    def executeCommand(self,command):
+        core.log("IN command %s" % (command.name))
+        table_id = command.getValue("table_id")
+        panel = command.getValue("panel")
+        
+        mdb = mongo.MongoDBComponents(config.dbIP,config.dbPort)
+        mdb.deleteDocument(config.dbDefault, config.rootTableCollectionName, {'_id': OID.ObjectId(table_id) } )
+        s = "Deleted Table #%s" % ( str(table_id) )
+
+        re = core.ReturnEnvelope()
+        displayCmd = core.Command('Display')
+        displayCmd.addParameter('panel', panel)
+        displayCmd.addParameter('html64', core.pack(s) )
+        
+        re.add(displayCmd)
+        return re    
    
 
     
