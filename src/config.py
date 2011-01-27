@@ -5,7 +5,7 @@ import os
 
 versionMajor = 0
 versionMinor = 4
-versionRevision = 7
+versionRevision = 8
 
 appName = "Table"
 
@@ -37,10 +37,10 @@ nav = [
 
 
 
-LogPath ="C:\inetpub\wwwroot\\net4\pyInetPub\DieTafel\core\src\log"
-PathSep = '\\'
-#LogPath = "/var/wsgi/tafel/log"
-#PathSep = '/'
+#LogPath ="C:\inetpub\wwwroot\\net4\pyInetPub\DieTafel\core\src\log"
+#PathSep = '\\'
+LogPath = "/var/wsgi/tafel/log"
+PathSep = '/'
 
 Log = "pyLog.txt"
 LogFile = "{0}{1}{2}".format(LogPath,PathSep,Log)
