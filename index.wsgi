@@ -38,7 +38,7 @@ def application(environ, start_response):
 
 
             else:
-                output += "content-type [{0}] not supported"
+                output += "content-type [{0}] not supported".format(content_type)
         else:
             output += "method [{0}] not supported".format(environ['REQUEST_METHOD'])
     
