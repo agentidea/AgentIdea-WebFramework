@@ -19,9 +19,14 @@ def application(environ, start_response):
 
     if 'REQUEST_METHOD' in environ:
         if environ['REQUEST_METHOD'].upper() == 'POST':
-            content_type = environ['CONTENT_TYPE']
-            if content_type.lower() == 'application/x-www-form-urlencoded':
-                # was really a FORM POST 
+            content_type = environ['CONTENT_TYPE'].lower()
+            
+            #application/x-www-form-urlencoded; charset=UTF-8
+            #if content_type.lower() == 'application/x-www-form-urlencoded':
+            if not 'application/x-www-form-urlencoded' in content_type:
+            	 output += "content-type [{0}] not supported".format(content_type)
+            else:
+            	 # was really a FORM POST 
                 #retrieve the POST http://bit.ly/icvahV
                 post64 = environ['wsgi.input'].read(int(environ['CONTENT_LENGTH']))
                 postClear = post64.decode('base64','strict')
@@ -35,10 +40,7 @@ def application(environ, start_response):
 
                 start_response(status, response_headers)
                 return [str(output)] 
-
-
-            else:
-                output += "content-type [{0}] not supported".format(content_type)
+               
         else:
             output += "method [{0}] not supported".format(environ['REQUEST_METHOD'])
     
