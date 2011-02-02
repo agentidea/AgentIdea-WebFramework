@@ -194,3 +194,27 @@
 2011-02-02 18:14:48.584000 ::  Processing took 0.0280001163483 seconds -------------------------------- 
  
 
+2011-02-02 18:16:06.274000 :: IN command ShowAbout
+2011-02-02 18:16:06.276000 :: Finished Executing command ShowAbout
+2011-02-02 18:16:06.277000 :: JSON SENT <<{'time':'2011-02-02 18:16:06.276000','commands':[{'name':'Display','paramCount':'2','parameters':[{'name':'panel','value':"west"},{'name':'html64','value':"PGRpdiBjbGFzcz0nY2xzUGFuZWwnPjxiPkluZm9ybWF0aW9uIGFib3V0IHRoaXMgQXBwbGljYXRp%0Ab248L2I%2BPGRpdiBjbGFzcz0nY2xzQWJvdXQnPlRhYmxlIHZlciAwLjQuODwvZGl ... 592 chars omitted>>]
+2011-02-02 18:16:06.278000 ::  Processing took 0.00399994850159 seconds -------------------------------- 
+ 
+
+2011-02-02 18:16:11.429000 :: IN command ShowNavigation
+2011-02-02 18:16:11.430000 :: Finished Executing command ShowNavigation
+2011-02-02 18:16:11.431000 :: JSON SENT <<{'time':'2011-02-02 18:16:11.430000','commands':[{'name':'DisplayWindowTitle','paramCount':'1','parameters':[{'name':'html64','value':"VGFibGUgdmVyMC40Ljg%3D%0A"}],'preJS64':'Ly9hZGQgb25Db21tYW5kTG9hZCBKYXZhU2NyaXB0IGhlcmU=','postJS64':'Ly9hZGQgb25Db21tYW5kVW5sb2FkIEphdmFTY3JpcHQgaGVyZQ==','UserCurr ... 1510 chars omitted>>]
+2011-02-02 18:16:11.432000 ::  Processing took 0.00300002098083 seconds -------------------------------- 
+ 
+
+2011-02-02 18:16:16.086000 :: IN command ShowAbout
+2011-02-02 18:16:16.087000 :: Finished Executing command ShowAbout
+2011-02-02 18:16:16.088000 :: JSON SENT <<{'time':'2011-02-02 18:16:16.087000','commands':[{'name':'Display','paramCount':'2','parameters':[{'name':'panel','value':"west"},{'name':'html64','value':"PGRpdiBjbGFzcz0nY2xzUGFuZWwnPjxiPkluZm9ybWF0aW9uIGFib3V0IHRoaXMgQXBwbGljYXRp%0Ab248L2I%2BPGRpdiBjbGFzcz0nY2xzQWJvdXQnPlRhYmxlIHZlciAwLjQuODwvZGl ... 592 chars omitted>>]
+2011-02-02 18:16:16.090000 ::  Processing took 0.00200009346008 seconds -------------------------------- 
+ 
+
+2011-02-02 18:16:17.718000 :: IN command ShowEvents
+2011-02-02 18:16:17.738000 :: Finished Executing command ShowEvents
+2011-02-02 18:16:17.739000 :: JSON SENT <<{'time':'2011-02-02 18:16:17.738000','commands':[{'name':'Display','paramCount':'2','parameters':[{'name':'panel','value':"west"},{'name':'html64','value':"PHRhYmxlIGJvcmRlcj0nMCcgY2VsbHNwYWNpbmc9JzAnIGNlbGxwYWRkaW5nPSc1Jz48dHIgY2xh%0Ac3M9J2Nsc0dyaWRIZWFkZXJSb3cnPjx0ZD50YWJsZSAjPC90ZD48dGQ%2BdmVudWU ... 3189 chars omitted>>]
+2011-02-02 18:16:17.740000 ::  Processing took 0.0210001468658 seconds -------------------------------- 
+ 
+

@@ -9,11 +9,11 @@
 
 
 // WINDOWS
-var dest = "localhost";
-var url = "http://"+ dest +"/DieTafel/processor2.py";
+//var dest = "localhost";
+//var url = "http://"+ dest +"/DieTafel/processor2.py";
 
 
 // UNIX
-//var dest = "184.106.112.115";
-//var url =  "http://"+ dest +"/table";
+var dest = "184.106.112.115";
+var url =  "http://"+ dest +"/table";
 
