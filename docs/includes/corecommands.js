@@ -50,13 +50,34 @@ function cmdDisplayLog(macro)
 
 function cmdRemoveRemoteLog(macro)
 {
-	var panel = macro.parameters[0].value;
-	var m = newMacro("RemoveRemoteLog");
-	addParam(m,"panel",panel);
-	//addParam(m,"file","pyLog.txt");
-	processJSON(m);
-
+	var go = confirm("This action cannot be undone.  Backup? Proceed?");
+	if(go) {
+		var panel = macro.parameters[0].value;
+		var m = newMacro("RemoveRemoteLog");
+		addParam(m,"panel",panel);
+		//addParam(m,"file","pyLog.txt");
+		processJSON(m);
+	} else {
+		log("Action Undone");
+	}
 }
+
+
+/**
+* @description: clear xWindow
+*/
+
+function cmdClearXwindow(macro)
+{
+	var _idX = macro.parameters[0].value;
+	var dvToClearId = "window" + _idX.pull('x');
+	var dvToClear = document.getElementById(dvToClearId);
+	//$to do: this seems not to clear the window entirely ... could be a div nesting issue
+	//TheUte().removeChildren(dvToClear);
+	dvToClear.innerHTML = "";
+	
+}
+
 
 function cmdDisplay(macro)
 {

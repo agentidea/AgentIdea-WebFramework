@@ -67,7 +67,7 @@
    font-family:Helvetica, Arial;
    width:900px;
    height:300px;
-   color:green;
+   color:#66ff00;
    background-color:black;
 
 }
@@ -170,6 +170,15 @@
 	font-family:Arial;
 	font-size:10pt;
 	padding:6 6 6 6;
+}
+
+.clsXWindowX
+{
+	text-align:right;
+	font-family:Helvetica;
+	font-size:12pt;
+	cursor:hand;
+	cursor:pointer;
 }
 
 .clsAbout

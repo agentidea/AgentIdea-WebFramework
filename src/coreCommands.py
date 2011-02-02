@@ -10,15 +10,13 @@ import mongo
 from pymongo import objectid as OID
 
 
-
 class cmdRemoveRemoteLog:
     def executeCommand(self,command):
         panel = command.getValue("panel")
        
         core.removeFile(config.LogFile)
         
-        s = "removed Log"
-        
+        s = "removed server log file permanently"
         core.log("command %s - %s" % (command.name,s)) #log after the fact to make sure log file is clean looking ( not half the log event from this command
         
         re = core.ReturnEnvelope()
@@ -39,8 +37,9 @@ class cmdShowRemoteLog:
         intLines = int(lines)
         
         
-        s = "<div class='clsPanel'>"
+        s = "<div id='windowRemoteLog' class='clsPanel'>"
         s += "<b>Server Log Remote View</b>"
+        s += "<span id='xRemoteLog' title='close panel' class='clsXWindowX' onclick=\" FWK.say('ClearXwindow',this.id); \">x</span>"
         s += "<div class='clsLog'><textarea class='clsTextAreaLog'>"
         s += core.tail(config.LogFile,intLines)
         s += "</textarea></div>"

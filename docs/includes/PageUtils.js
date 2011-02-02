@@ -43,12 +43,14 @@ String.prototype.startsWith = function(pattern) {
 }
 
 /**
+*	@description: Pulls part of a string, excluding the pattern
+*   @example: if string is say txtFirstName, and the pattern passed is txt, then return FirsName
+*   @return: string - pattern
 *
-*
-* $to do: re-write with regex
+* 	$to do: re-write with regex
 *
 */ 
-String.prototype.pullRest = function(pattern) {
+String.prototype.pull = function(pattern) {
 	if( this.startsWith ) {
 		return this.substring(pattern.length,this.length);
 	}
@@ -59,8 +61,8 @@ String.prototype.pullRest = function(pattern) {
 }
 
 /**
-* @
-* @return boolean if a value is found in an array
+* @description: indexOf an array if not already implemented, else use the Array's Index of method
+* @return: boolean if a value is found in an array
 *
 */
 Array.prototype.has = (

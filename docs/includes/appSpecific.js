@@ -244,7 +244,7 @@ if(!APP) {
 				
 					if( _inputBoxes[i].id.startsWith("txtLocation")) {
 
-						var key = _inputBoxes[i].id.pullRest("txtLocation").toLowerCase();
+						var key = _inputBoxes[i].id.pull("txtLocation").toLowerCase();
 						
 						if( _inputBoxes[i].value.trim().length == 0) {
 						
@@ -264,7 +264,7 @@ if(!APP) {
 					else {
 						if( _inputBoxes[i].id.startsWith("txtMeta")) {
 	
-							var key = _inputBoxes[i].id.pullRest("txtMeta").toLowerCase();
+							var key = _inputBoxes[i].id.pull("txtMeta").toLowerCase();
 							if( _inputBoxes[i].value.trim().length == 0){
 							 displayMsg(key + " required",msgCode.warn);
 							 _inputBoxes[i].focus();
@@ -285,13 +285,13 @@ if(!APP) {
 				
 					if( _inputBoxes[i].id.startsWith("txtLocation")) {
 
-						var key = _inputBoxes[i].id.pullRest("txtLocation").toLowerCase();
+						var key = _inputBoxes[i].id.pull("txtLocation").toLowerCase();
 						t['location'][key] = _inputBoxes[i].value;
 					}
 					else {
 						if( _inputBoxes[i].id.startsWith("txtMeta")) {
 	
-							var key = _inputBoxes[i].id.pullRest("txtMeta").toLowerCase();
+							var key = _inputBoxes[i].id.pull("txtMeta").toLowerCase();
 							t['meta'][key] = _inputBoxes[i].value;
 						}
 					}
