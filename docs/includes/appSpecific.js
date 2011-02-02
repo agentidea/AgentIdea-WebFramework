@@ -174,6 +174,7 @@ if(!APP) {
 			{
 				
 				
+				/*
 				var l = [1,2,3,4,770];
 				
 				var add = function(a,b)
@@ -184,10 +185,10 @@ if(!APP) {
 				
 				var sum = l.reduce(add,0);
 				log(sum);
+				*/
 				
 				
-				
-				/* var lenUsers = userList.length;
+				var lenUsers = userList.length;
 				if( lenUsers == 0) {
 					return false;
 				}
@@ -220,17 +221,12 @@ if(!APP) {
 						}
 						
 					}	
-					
-							
-					
-					
-					
-		
+
 				}
 				
 				return true;
 				
-				*/
+				
 			},
 			validateTableForm: function(){
 			
@@ -434,6 +430,7 @@ if(!APP) {
 							addParam(SaveNewEvent,"table64",tableJSON64);
 							addParam(SaveNewEvent,"panel",attachPoint.id);
 							processJSON(SaveNewEvent);
+							
 						}
 						else
 						{
@@ -442,7 +439,7 @@ if(!APP) {
 					}
 					else
 					{
-						log("valze wirth!");
+						log("form did not validate correctly");
 					}
 					
 				};
