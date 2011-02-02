@@ -1,32 +1,32 @@
 import unittest
-import config
-import core
-import error
-import coreCommands
+from src.framework.core import log, Utils, Command, Framework
+from src.config import info
 
-
-class CommandTests(unittest.TestCase):
-    
-    def setUp(self):
-        pass
-    
-    def test_CreateTable(self):
-
-        c = core.Command("CreateNewTable")
-        c.addParameter("name","test table event")
-        c.addParameter("collection","tables")
-        c.addParameter("description","table at DeVinos")
-
-        re = core.processCommand(c)
+class DomainCommandTests(unittest.TestCase):
+  
+    def test_Ping(self):
+        passed = "Gandalf"
+        c = Command("Ping")
+        c.addParameter("name",passed)
+        re = Framework().processCommand(c,info.commandDomainTuple)
+        self.assertEquals(re.commands[0].name,"ReturnCommand")
+        s = re.commands[0].params[0].val
+        self.assertEquals(s,passed)     
         
-        self.assertEquals(re.commands[0].name,"Display")
-        self.assertEquals(re.commands[0].params[0].name,"panel")
-        self.assertEquals(re.commands[0].params[1].name,"html64")
+    
+    def test_SaveNewTableEvent(self):  
+        table = {}
+        c = Command("SaveNewEvent")
         
-        s = re.commands[0].params[1].val
-        s = core.unpack(s)
-        print s
-         
+        #c.addParameter("table64",table64)
+        #re = Framework().processCommand(c,info.commandDomainTuple)
+        
+    def test_ShowEvents(self):
+        c = Command("ShowEvents")
+        c.addParameter("panel",'west')
+        re = Framework().processCommand(c, info.commandDomainTuple)
+        
+        print "returned command [%s] had %s parameters" % (re.commands[0].name,len(re.commands[0].params))
    
         
   

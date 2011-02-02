@@ -1,11 +1,13 @@
 
+
 /**
-
-	JS Language Extension Methods
-
+*	Javascript Language Extension
+*
 */
 
- //Crockfords 'object' clone
+/**
+* Crockfords Object clone
+*/
 if( typeof Object.create !== 'function')
 {
 	Object.create = function(o) {
@@ -31,6 +33,7 @@ String.prototype.startsWith = function(pattern) {
 	return (this.match("^"+pattern)==pattern)
 }
 
+
 /**
 *	@description: Pulls part of a string, excluding the pattern
 *   @example: if string is say txtFirstName, and the pattern passed is txt, then return FirsName
@@ -39,6 +42,7 @@ String.prototype.startsWith = function(pattern) {
 * 	$to do: re-write with regex
 *
 */ 
+
 String.prototype.pull = function(pattern) {
 	if( this.startsWith ) {
 		return this.substring(pattern.length,this.length);
@@ -49,11 +53,13 @@ String.prototype.pull = function(pattern) {
 	}
 }
 
+
 /**
 * @description: indexOf an array if not already implemented, else use the Array's Index of method
 * @return: boolean if a value is found in an array
 *
 */
+
 Array.prototype.has = (
 	  !Array.indexOf ? function (o)
 	  {

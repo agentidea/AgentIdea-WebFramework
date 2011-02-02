@@ -1,41 +1,9 @@
 import sys
-import config
-import error
 import os
+import error
+from src.config import info
 
-def printList(list):
-    for item in list:
-        print item
- 
-    
-def ParseMacroDict(macro):
-    cmd = Command(macro['name'])
-    for param in macro['parameters']:
-        cmd.addParameter(param['name'], param['value'])
-    return cmd
 
-def pack(what):
-    import urllib
-    s = what.encode('base64','strict')
-    return urllib.quote(s)
-
-def unpack(what):
-    import urllib
-    s = urllib.unquote(what)
-    return s.decode('base64','strict')
-
-def tail(filepath, nol=10):
-    f = open(filepath, 'rU')    # U is to open it with Universal newline support 
-    allLines = f.readlines()
-    f.close()
-    ret = "\r\n".join(allLines[-nol:])
-    return ret
-
-def removeFile(filePath):
-    os.remove(filePath)
-    
-
-  
 def log(s):
 
     import os.path 
@@ -45,18 +13,18 @@ def log(s):
     dt = Utils().Timestamp()
     
     
-    if not os.path.exists(config.LogPath): 
+    if not os.path.exists(info.LogPath): 
         try:
-            os.makedirs(config.LogPath)
+            os.makedirs(info.LogPath)
         except:
             print "Unexpected dir creation error:" % list(sys.exc_info())
             raise
              
       
-    if( os.path.isfile(config.LogFile) == False ):
+    if( os.path.isfile(info.LogFile) == False ):
         try:
             """new file, open for writing"""  
-            logfile = open(config.LogFile,'w') 
+            logfile = open(info.LogFile,'w') 
         except IOError as (errno, strerror):
             print "I/O error W ({0}): {1}".format(errno, strerror)
             return
@@ -66,7 +34,7 @@ def log(s):
     else:
         try:
             """existing log, open for appending"""
-            logfile = open(config.LogFile,'a') 
+            logfile = open(info.LogFile,'a') 
         except IOError as (errno, strerror):
             print "I/O error A({0}): {1}".format(errno, strerror)
             return
@@ -85,63 +53,90 @@ def log(s):
 
      
 # http://code.activestate.com/recipes/576750-pretty-print-xml/   
-prettyPrint = lambda dom: '\n'.join([line for line in dom.toprettyxml(indent=' '*2).split('\n') if line.strip()])
 
-
-def ConvertDictToString(d):
-    #from pprint import pprint 
-    #pprint(d)
-    return ''.join(["'%s':%s\r\n" % item for item in d.iteritems()])
-
-
-def info(object, spacing=10, collapse=1):
-    """Print methods and doc strings.
-    
-    Takes module, class, list, dictionary, or string."""
-    methodList = [e for e in dir(object) if callable(getattr(object, e))]
-    processFunc = collapse and (lambda s: " ".join(s.split())) or (lambda s: s)
-    print "\n".join(["%s %s" %
-                     (method.ljust(spacing),
-                      processFunc(str(getattr(object, method).__doc__)))
-                     for method in methodList])
-
-def processCommand(cmd,commandCoreTuple = None):
-    """ processess a Command dynamically """
-    moduleID = None
-    klassID = None
-    
-    if(commandCoreTuple == None):
-        moduleID = config.commandCoreTuple[0]
-        klassID =  config.commandCoreTuple[1] + cmd.name
-    else:
-        moduleID = commandCoreTuple[0]
-        klassID =  commandCoreTuple[1] + cmd.name
-    
-    
-    #log("LOAD Python Class -- %s.%s" % (moduleID,klassID))
-
-    ret = None
-    
-    try:
-        mod = __import__(moduleID, globals(), locals(), [klassID]) 
-        klass = getattr(mod, klassID) 
-        c = klass()
-        ret = c.executeCommand(cmd)
-        log("Finished Executing command {0}".format(cmd.name))
-    except AttributeError as ae:
-        logMsg = "It's MostLikely this command {0} was not found.{1}".format(cmd.name,list(sys.exc_info()))
+class Framework(object):
+    def processCommand(self,cmd,commandCoreTuple = None):
+        """ processess a Command dynamically """
+        moduleID = None
+        klassID = None
         
-        log(logMsg)
-        raise error.CommandNotFoundException(logMsg)
+        if(commandCoreTuple == None):
+            moduleID = info.commandCoreTuple[0]
+            klassID =  info.commandCoreTuple[1] + cmd.name
+        else:
+            moduleID = commandCoreTuple[0]
+            klassID =  commandCoreTuple[1] + cmd.name
+
+        ret = None
+
+        try:
+            c = self.LoadClass(moduleID,klassID)   
+            log("core") 
+        except error.CommandNotFoundException:
+            #$to do: refactor more elegantly?  dir() on module to see if contains command?
+            #command not found in core, look in domain tuple command file
+            moduleID = info.commandDomainTuple[0]
+            klassID = info.commandDomainTuple[1] + cmd.name
+            c = self.LoadClass(moduleID,klassID)
+            log("custom")
+        except:
+            log("Error loading %s %s" % (klassID,list(sys.exc_info())))
+            raise
         
-    except:
-        log("Error loading %s %s" % (klassID,list(sys.exc_info())))
-        raise
+        try:
+            ret = c.executeCommand(cmd)
+            log("EXECUTE {0}".format(cmd.name))
+        except:
+            log("Error EXECUTE command %s %s" % (klassID,list(sys.exc_info())))
+            raise
+            
+        return ret
+    
+    def LoadClass(self,moduleID,klassID):
         
-    return ret
+        actualClass = None
+        try:
+            mod = __import__(moduleID, globals(), locals(), [klassID]) 
+            klass = getattr(mod, klassID) 
+            actualClass = klass()
+        except AttributeError as ae:
+            logMsg = "{0} {1}".format(moduleID,klassID)
+            raise error.CommandNotFoundException(logMsg)
+        except:
+            log("Error loading %s %s" % (klassID,list(sys.exc_info())))
+            raise
+        
+        return actualClass
+        
+        
+        
+        
+        
+    def ParseMacroDict(self,macro):
+        cmd = Command(macro['name'])
+        for param in macro['parameters']:
+            cmd.addParameter(param['name'], param['value'])
+        return cmd
 
 
 class Utils(object):
+    def reflectInfo(self,object, spacing=10, collapse=1):
+        """Print methods and doc strings.
+        
+        Takes module, class, list, dictionary, or string."""
+        methodList = [e for e in dir(object) if callable(getattr(object, e))]
+        processFunc = collapse and (lambda s: " ".join(s.split())) or (lambda s: s)
+        print "\n".join(["%s %s" %
+                         (method.ljust(spacing),
+                          processFunc(str(getattr(object, method).__doc__)))
+                         for method in methodList])
+        
+    def ConvertDictToString(self,d):
+        #from pprint import pprint 
+        #pprint(d)
+        return ''.join(["'%s':%s\r\n" % item for item in d.iteritems()])
+
+    prettyPrint = lambda dom: '\n'.join([line for line in dom.toprettyxml(indent=' '*2).split('\n') if line.strip()])
 
     def Ping(self,n):
         return n /3
@@ -152,17 +147,44 @@ class Utils(object):
         
     def Timestamp(self):
         import datetime
-        import string
         d = datetime.datetime.now()
         #return '{:%Y-%m-%d %H:%M:%S}'.format(d)
         return d
+    
+    def printList(self,list):
+        for item in list:
+            print item
+     
+        
+    
+    
+    def pack(self,what):
+        import urllib
+        s = what.encode('base64','strict')
+        return urllib.quote(s)
+    
+    def unpack(self,what):
+        import urllib
+        s = urllib.unquote(what)
+        return s.decode('base64','strict')
+    
+    def tail(self,filepath, nol=10):
+        f = open(filepath, 'rU')    # U is to open it with Universal newline support 
+        allLines = f.readlines()
+        f.close()
+        ret = "\r\n".join(allLines[-nol:])
+        return ret
+    
+    def removeFile(self,filePath):
+        os.remove(filePath)
+        
     
 class Command(object):
     def __init__(self, commandName):
         self._name = commandName
         self._parameterList = []
-        self._preScript = config.onCommandLoad64
-        self._postScript = config.onCommandUnload64
+        self._preScript = info.onCommandLoad64
+        self._postScript = info.onCommandUnload64
 
     def get_name(self):
         return self._name
@@ -237,7 +259,7 @@ class Command(object):
         return s
     
     JSON = property(toJSON)
-           
+         
 class Parameter(object):
     def __init__(self, paramName,paramValue):
         self._paramName = paramName
@@ -280,10 +302,7 @@ class ReturnEnvelope(object):
         s += "}"
         
         return s
-        
-
-
-
+ 
 class TreeNode_v1(object):
     def __init__(self,_index):
         self.children = []
