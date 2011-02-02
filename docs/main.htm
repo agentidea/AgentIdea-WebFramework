@@ -4,58 +4,51 @@
 	<TITLE></TITLE>
 
 	<link href="./includes/main.css" rel="stylesheet" type="text/css" />
-	
-	
 
-	<script src="./includes/grid.js" language="javascript" type="text/javascript"></script>
-	<script src="./includes/PageUtils.js" language="javascript" type="text/javascript"></script>
-	<script src="./includes/functools.js" language="javascript" type="text/javascript"></script>
-	<script src="./includes/json2.js" language="javascript" type="text/javascript"></script>
-	<script src="./includes/core.js" language="javascript" type="text/javascript"></script>
-	
-	<script src="./includes/appSpecific.js" language="javascript" type="text/javascript"></script>
-	
-	<script src="./includes/corecommands.js" language="javascript" type="text/javascript"></script>
-	<script src="./includes/appLogic.js" language="javascript" type="text/javascript"></script>
-	
+	<script src="./framework/grid.js" language="javascript" type="text/javascript"></script>
+	<script src="./framework/PageUtils.js" language="javascript" type="text/javascript"></script>
+	<script src="./framework/functools.js" language="javascript" type="text/javascript"></script>
+	<script src="./framework/json2.js" language="javascript" type="text/javascript"></script>
+	<script src="./framework/core.js" language="javascript" type="text/javascript"></script>
+	<script src="./custom/appSpecific.js" language="javascript" type="text/javascript"></script>
+	<script src="./framework/corecommands.js" language="javascript" type="text/javascript"></script>
+	<script src="./custom/customcommands.js" language="javascript" type="text/javascript"></script>
+	<script src="./custom/appLogic.js" language="javascript" type="text/javascript"></script>
 
-	
-	
-	
 	<script language="javascript" type="text/javascript">
 
 	window.onload = function()
 	{
-		
+
 		ShowNavigation("farnorth");
-	
+
 	}
-	
+
 
 	</script>
-	
+
 </HEAD>
 
 <BODY>
 
 
-	<table border='1'>
-		
+	<table border='0'>
+
 		 <tr>
 		 	<td>
-		 	
-	<!-- simple compass layout SNEW -->    
+
+	<!-- simple compass layout SNEW -->
     <table border="0">
     	<tr>
     		<td><DIV id="farnorth"></DIV></td>
-    	
+
     	</tr>
     	<tr>
 			<td>
     <DIV id="dvMessage" class="clsMsg" ></DIV>
 		     </td>
 		 </tr>
-		 
+
     	<tr>
     		<td><DIV id="west"></DIV></td>
     		<td>
@@ -73,34 +66,34 @@
     		<td><DIV id="east"></DIV></td>
     	</tr>
 	</table>
-	
+
 			</td>
 		</tr>
 
 		<tr>
 			<td>
-	
-	
-	
-	
-	<DIV id="footer" class="clsFooter"> <br/><br/><input class="clsButtonLight" type="button" onclick="toggleLog(this);" value='show debug'/></DIV>
-			
-			
-			</td>
-		</tr>	
-		
 
-		
+
+
+
+	<DIV id="footer" class="clsFooter"> <br/><br/><input class="clsButtonLight" type="button" onclick="toggleLog(this);" value='show debug'/></DIV>
+
+
+			</td>
+		</tr>
+
+
+
 	</table>
     <table>
-    
+
     	<tr>
 			<td><DIV id="farsouth"></DIV></td>
-		</tr>	
-		
+		</tr>
+
     <tr>
 			<td>
-	
+
 	<DIV id="divLog" class="clsLog" style='display:none;'>Log Window:</DIV>
 			</td>
 		</tr>
