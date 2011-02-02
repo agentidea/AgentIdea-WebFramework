@@ -48,6 +48,7 @@ def application(environ, start_response):
     output += "<hr/>"
     output += "<pre style='font-size:6pt;'>"
     #output += core.ConvertDictToString(environ)
+    output += "POST only to this system"
     output += "</pre>"
 
 

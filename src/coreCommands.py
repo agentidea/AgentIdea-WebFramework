@@ -9,6 +9,55 @@ import json
 import mongo
 from pymongo import objectid as OID
 
+
+
+class cmdRemoveRemoteLog:
+    def executeCommand(self,command):
+        panel = command.getValue("panel")
+       
+        core.removeFile(config.LogFile)
+        
+        s = "removed Log"
+        
+        core.log("command %s - %s" % (command.name,s)) #log after the fact to make sure log file is clean looking ( not half the log event from this command
+        
+        re = core.ReturnEnvelope()
+        displayCmd = core.Command('Display')
+        displayCmd.addParameter('panel', panel)
+        displayCmd.addParameter('html64', core.pack(s) )
+        re.add(displayCmd)
+        return re        
+        
+        
+        
+        
+class cmdShowRemoteLog:
+    def executeCommand(self,command):
+       
+        panel = command.getValue("panel")
+        lines = command.getValue("lines")
+        intLines = int(lines)
+        
+        
+        s = "<div class='clsPanel'>"
+        s += "<b>Server Log Remote View</b>"
+        s += "<div class='clsLog'><textarea class='clsTextAreaLog'>"
+        s += core.tail(config.LogFile,intLines)
+        s += "</textarea></div>"
+      
+        s += "<div class='clsAbout'><input type='button' value='clear server log' onclick=\" FWK.say('RemoveRemoteLog','%s',25); \" /></div>" % panel
+        s += "</div>"
+        
+        core.log("IN command %s( %s %s)" % (command.name,lines,panel)) #log after the fact to make sure log file is clean looking ( not half the log event from this command
+        
+        re = core.ReturnEnvelope()
+        displayCmd = core.Command('Display')
+        displayCmd.addParameter('panel', panel)
+        displayCmd.addParameter('html64', core.pack(s) )
+        re.add(displayCmd)
+        return re        
+        
+
 class cmdShowAbout:
     
     def executeCommand(self,command):
@@ -19,6 +68,7 @@ class cmdShowAbout:
         s += "<div class='clsAbout'>{0} ver {1}.{2}.{3}</div>".format(config.appName,config.versionMajor,config.versionMinor,config.versionRevision)
         s += "<div class='clsAbout'>db://{0}:{1} db name: {2}</div>".format(config.dbIP,config.dbPort,config.dbDefault)
         s += "<div class='clsAbout'>logging to {0} path</div>".format(config.LogFile)
+        s += "<div class='clsAbout'><input type='button' value='show server log' onclick=\" FWK.say('DisplayLog','east',25); \" /></div>".format(config.LogFile)
         s += "</div>"
         
         re = core.ReturnEnvelope()

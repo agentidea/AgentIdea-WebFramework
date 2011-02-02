@@ -60,6 +60,18 @@
 
 }
 
+.clsTextAreaLog
+{
+   padding:6 6 6 6;
+   font-size:9pt;
+   font-family:Helvetica, Arial;
+   width:900px;
+   height:300px;
+   color:green;
+   background-color:black;
+
+}
+
 .clsLog
 {
    padding:6 6 6 6;
@@ -212,6 +224,17 @@
 	font-size:11pt;
 	font-family:Verdana,Arial;
 }
+
+.clsGridCell
+{
+	background-color:#000000;
+	color:pink;
+	font-size:10pt;
+	font-family:Helvetica,Arial;
+	
+}
+	
+	
 .clsGridHeaderRow
 {
 	background-color:#000000;

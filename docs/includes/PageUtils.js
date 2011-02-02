@@ -14,8 +14,20 @@ if( typeof Object.create !== 'function')
 	};
 }
 
+//
+//Language Extension Methods
+//
 
-
+/* FUNCTIONAL ASPECTS 
+Array.method('reduce', function (f, value) {
+	var i;
+	for(i=0; i< this.length; i += 1) {
+		value = f(this[i], value);
+	}
+	return value;
+ });
+ */
+ 
 String.prototype.trim = function() {
 	return this.replace(/^\s+|\s+$/g,"");
 }
@@ -30,6 +42,12 @@ String.prototype.startsWith = function(pattern) {
 	return (this.match("^"+pattern)==pattern)
 }
 
+/**
+*
+*
+* $to do: re-write with regex
+*
+*/ 
 String.prototype.pullRest = function(pattern) {
 	if( this.startsWith ) {
 		return this.substring(pattern.length,this.length);
@@ -39,6 +57,32 @@ String.prototype.pullRest = function(pattern) {
 		return "";
 	}
 }
+
+/**
+* @
+* @return boolean if a value is found in an array
+*
+*/
+Array.prototype.has = (
+	  !Array.indexOf ? function (o)
+	  {
+	      var l = this.length + 1;
+          while (l -= 1)
+          {
+            if (this[l - 1] === o)
+            {            
+            	return true;        
+            }
+           }    
+	       return false;  
+	  } : function (o)
+	  {
+			return (this.indexOf(o) !== -1);  
+	  });
+
+
+
+
 
 
 

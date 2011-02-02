@@ -1,6 +1,7 @@
 import sys
 import config
 import error
+import os
 
 def printList(list):
     for item in list:
@@ -22,10 +23,20 @@ def unpack(what):
     import urllib
     s = urllib.unquote(what)
     return s.decode('base64','strict')
-      
-def log(s):
+
+def tail(filepath, nol=10):
+    f = open(filepath, 'rU')    # U is to open it with Universal newline support 
+    allLines = f.readlines()
+    f.close()
+    ret = "\r\n".join(allLines[-nol:])
+    return ret
+
+def removeFile(filePath):
+    os.remove(filePath)
     
-    return
+
+  
+def log(s):
 
     import os.path 
     
@@ -41,12 +52,10 @@ def log(s):
             print "Unexpected dir creation error:" % list(sys.exc_info())
             raise
              
-
-        
-    #openMode = 'a'
-    
+      
     if( os.path.isfile(config.LogFile) == False ):
         try:
+            """new file, open for writing"""  
             logfile = open(config.LogFile,'w') 
         except IOError as (errno, strerror):
             print "I/O error W ({0}): {1}".format(errno, strerror)
@@ -56,6 +65,7 @@ def log(s):
             return
     else:
         try:
+            """existing log, open for appending"""
             logfile = open(config.LogFile,'a') 
         except IOError as (errno, strerror):
             print "I/O error A({0}): {1}".format(errno, strerror)

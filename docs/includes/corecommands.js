@@ -32,6 +32,32 @@ function cmdAlert(macro)
    
 }
 
+function cmdDisplayLog(macro)
+{
+	var panel = macro.parameters[0].value;
+	var lines = macro.parameters[1].value;
+	
+	
+	log("in local command, about to request log " + lines + " details to paint to " + panel);
+	
+	var m = newMacro("ShowRemoteLog");
+	addParam(m,"panel",panel);
+	addParam(m,"lines",lines);
+	//addParam(m,"file","pyLog.txt");
+	processJSON(m);
+
+}
+
+function cmdRemoveRemoteLog(macro)
+{
+	var panel = macro.parameters[0].value;
+	var m = newMacro("RemoveRemoteLog");
+	addParam(m,"panel",panel);
+	//addParam(m,"file","pyLog.txt");
+	processJSON(m);
+
+}
+
 function cmdDisplay(macro)
 {
 

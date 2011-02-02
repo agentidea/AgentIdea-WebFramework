@@ -25,12 +25,14 @@ def Request():
     start = time.time()
     Header("Content-type: text/html")
 
+    
     #post data is base64 encoded
     post64 = Read()
     postClear = post64.decode('base64','strict')
  
     macroDict = json.loads(postClear)
     cmd = core.ParseMacroDict(macroDict)
+
     retEnv = core.processCommand(cmd)
 
     retJSON = retEnv.toJSON()
@@ -38,7 +40,7 @@ def Request():
 
     Write( str(retJSON) )
     
-    core.log("JSON SENT <<%s>>]" % (str(retJSON)))
+    core.log("JSON SENT <<%s ... %s chars omitted>>]" % (str(retJSON)[0:300],(len(retJSON) -300) ))
     core.log(" Processing took %s seconds -------------------------------- \n \n" % (str(end)))
 
  

@@ -51,7 +51,6 @@ if(!User) {
 	middleName:"",
 	email:"",
 	state:0
-
 	};
 }
 
@@ -67,8 +66,20 @@ if(!APP) {
 				var s = " Dear {guest.firstName}, ";
 				s += " \r\n\r\n";
 				s += " You are invited to attend table #" + objTable.tableNumber;
+				
 				s += " at " + objTable.location.venue;
+				
 				s += "\r\n";
+				
+				
+				if( objTable.location.url != null )
+				{
+					s += " \r\n";
+					s += " Table venue website is ";
+					s += objTable.location.url;
+					s += " \r\n";
+					s += " \r\n";
+				}
 				
 				s += " on " + objTable.meta.date;
 				s += "  at " + objTable.meta.time;
@@ -161,40 +172,74 @@ if(!APP) {
 	
 			validateUsers: function(userList)
 			{
-			
-				if(userList.length == 0) {
+				
+				
+				var l = [1,2,3,4,770];
+				
+				var add = function(a,b)
+				{
+					return a + b;
+				
+				}
+				
+				var sum = l.reduce(add,0);
+				log(sum);
+				
+				
+				
+				/* var lenUsers = userList.length;
+				if( lenUsers == 0) {
 					return false;
 				}
 				
-				for ( user in userList )
+				for ( var i=0; i < lenUsers; i+= 1 )
 				{
-					var tmpUser = userList[user];
-					if( tmpUser.state == UserStates.deleted ) continue;
+					var tmpUser = userList[i];
 					
-					if(tmpUser.firstName.trim().length == 0)
+					if( tmpUser != null)
 					{
-						return false;
-					}
-					if( tmpUser.lastName.trim().length == 0)
-					{
-						return false;
-					}
-					if( tmpUser.email.trim().length == 0)
-					{
-						return false;
-					}
-					else
-					{
-						//to do validInputBox email ....
 					
-					}
+						if( tmpUser.state == UserStates.deleted ) continue;
+						
+						if(tmpUser.firstName.trim().length == 0)
+						{
+							return false;
+						}
+						if( tmpUser.lastName.trim().length == 0)
+						{
+							return false;
+						}
+						if( tmpUser.email.trim().length == 0)
+						{
+							return false;
+						}
+						else
+						{
+							//to do validInputBox email ....
+						
+						}
+						
+					}	
+					
+							
+					
+					
+					
+		
 				}
 				
 				return true;
+				
+				*/
 			},
 			validateTableForm: function(){
 			
 				ClearMessages();
+				
+				//var locationExcludeList = ['street2','url']; 
+				var locationExcludeList = new Array();
+				locationExcludeList.push('street2');
+				locationExcludeList.push('url');
 				
 			    var _inputBoxes = document.getElementsByTagName("input");
 				var lenInputs = _inputBoxes.length;
@@ -204,11 +249,20 @@ if(!APP) {
 					if( _inputBoxes[i].id.startsWith("txtLocation")) {
 
 						var key = _inputBoxes[i].id.pullRest("txtLocation").toLowerCase();
-						if( _inputBoxes[i].value.trim().length == 0)
-						{
-							displayMsg(key + " required",msgCode.warn);
-							 _inputBoxes[i].focus();
-							return false;
+						
+						if( _inputBoxes[i].value.trim().length == 0) {
+						
+							if(locationExcludeList.has(key) == true) {
+								log("optional field, so do nothing");
+								continue;
+							}
+							else{
+							
+								displayMsg(key + " required",msgCode.warn);
+							 	_inputBoxes[i].focus();
+								return false;
+							}
+							
 						}
 					}
 					else {
@@ -287,13 +341,13 @@ if(!APP) {
 				
 				
 				_txtFirstName.onblur = function(){
-					user.firstName = this.value;
+					_user.firstName = this.value;
 				};
 				_txtLastName.onblur = function(){
-					user.lastName = this.value;
+					_user.lastName = this.value;
 				};
 				_txtEmail.onblur = function(){
-					user.email = this.value;
+					_user.email = this.value;
 				};
 			
 				var _cxlCmd = TheUte().getButton("cmdDelete","remove","delete this user",null,"clsActionButton");
@@ -323,8 +377,8 @@ if(!APP) {
 				dvUser.appendChild( g.gridTable );
 				attachPoint.appendChild( dvUser  );
 				
+				
 			},
-			
 			tafelCreateForm: function(attachPoint)
 			{
 
@@ -336,12 +390,12 @@ if(!APP) {
 			    
 				var _txtTableLocation = TheUte().getInputBox('','txtLocationVenue',null,null,'clsInput','venue');
 				var _txtTableStreet = TheUte().getInputBox('','txtLocationStreet',null,null,'clsInput','street');
-				var _txtTableStreet2 = TheUte().getInputBox('','txtLocationStreet2',null,null,'clsInput','street 2');
+				var _txtTableStreet2 = TheUte().getInputBox('','txtLocationStreet2',null,null,'clsInput','OPTIONAL street 2');
 				var _txtTableCity = TheUte().getInputBox('','txtLocationCity',null,null,'clsInput','city');
 				var _txtTableState = TheUte().getInputBox('','txtLocationState',null,null,'clsInput','state');
 				var _txtTableZip = TheUte().getInputBox('','txtLocationZip',null,null,'clsInput','zip/postal code');
 				var _txtTableCountry = TheUte().getInputBox('','txtLocationCountry',null,null,'clsInput','country');
-				var _txtTableURL = TheUte().getInputBox('','txtLocationURL',null,null,'clsInput','event location website');
+				var _txtTableURL = TheUte().getInputBox('','txtLocationURL',null,null,'clsInput','OPTIONAL event location website URL');
 				var _txtTableDate = TheUte().getInputBox('','txtMetaDate',null,null,'clsInput','date');
 				var _txtTableTime = TheUte().getInputBox('','txtMetaTime',null,null,'clsInput','time');
 				var _txtTableDescription  = TheUte().getTextArea('','txtTableDescription',null,null,'clsTextArea');
@@ -362,14 +416,17 @@ if(!APP) {
 				
 					if( APP.validateTableForm() == true)
 					{
-						if( (APP.validateUsers(tafel.hosts))
-							&&  (APP.validateUsers(tafel.guests)) )
+						if( ( APP.validateUsers( tafel.hosts ))
+							&&  ( APP.validateUsers( tafel.guests )) )
 						{
+							
 							APP.populateTable(tafel);
 							
 							var tableJSON = JSON.stringify(tafel);
 							var tableJSON64 = TheUte().encode64( tableJSON );
 		
+							log(tableJSON);
+							
 							APP.resetTable(tafel);
 							displayMsg("");
 							
@@ -383,6 +440,10 @@ if(!APP) {
 							displayMsg("Please fill out all guest/host information",msgCode.warn);
 						}
 					}
+					else
+					{
+						log("valze wirth!");
+					}
 					
 				};
 				
@@ -390,6 +451,7 @@ if(!APP) {
 				var _lblTableLocation = document.createTextNode('venue');
 				var _lblTableStreet = document.createTextNode('street');
 				var _lblTableStreet2 = document.createTextNode('street 2');
+				var _lblTableURL = document.createTextNode('web site');
 				
 				var _lblTableCity = document.createTextNode('city');
 				var _lblTableState = document.createTextNode('state');
@@ -462,6 +524,7 @@ if(!APP) {
 				vals.push(_txtTableLocation);
 				//vals.push( _lblTableDescription );
 				//vals.push( _txtTableDescription );
+				
 				vals.push( _lblTableStreet );
 				vals.push( _txtTableStreet );	
 				vals.push( _lblTableStreet2 );
@@ -474,6 +537,9 @@ if(!APP) {
 				vals.push( _txtTableZip);
 				vals.push( _lblTableCountry );
 				vals.push( _txtTableCountry );
+				vals.push( _lblTableURL );
+				vals.push( _txtTableURL );
+				
 				vals.push( _lblTableDate );
 				vals.push( _txtTableDate );
 				vals.push( _lblTableTime );

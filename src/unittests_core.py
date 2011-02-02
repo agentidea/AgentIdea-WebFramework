@@ -8,7 +8,8 @@ class TestCoreComponents(unittest.TestCase):
     def setUp(self):
         self.seq = range(10)
         self.shouldPrintVerbose = False
-        
+    
+  
     def test_info(self):
         dict = {}
         if self.shouldPrintVerbose:

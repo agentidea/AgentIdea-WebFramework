@@ -36,9 +36,11 @@ nav = [
        ]
 
 
-
+#WINDOWS
 #LogPath ="C:\inetpub\wwwroot\\net4\pyInetPub\DieTafel\core\src\log"
 #PathSep = '\\'
+
+#UNIX
 LogPath = "/var/wsgi/tafel/log"
 PathSep = '/'
 

@@ -7,11 +7,13 @@
 ////////////////////
 // GLOBAL VARIABLES
 // for WEB SERVICE endpoint
+var FWK;
 
 var xmlHttpLocal = null;
 var SYNC = false;
 var gDisableAJAXcalls = false;
 var bCallBusyLock = false;
+
 
 //var dest = "localhost";
 var dest = "184.106.112.115";
@@ -19,6 +21,44 @@ var dest = "184.106.112.115";
 //var url = "http://"+ dest +"/DieTafel/processor2.py";
 var url =  "http://"+ dest +"/table";
 
+
+if(!FWK){
+	FWK = {
+		 say:function() {
+		 
+		 /**
+		 *	say takes a textual command as first(0) argument
+		 *  subsequent arguments (1 - N) are treated as parameters -- target commands need to be positional ...       
+		 */
+		 var commandName = null;
+		 
+		 var i;
+		 var params = "";
+		 var argLen = arguments.length;
+		 
+		 if(argLen > 1)
+		 {
+		 	commandName = arguments[0];
+		 	
+		 	var m = newMacro(commandName);
+			
+			
+			
+			
+		 	for(i=1;i<argLen; i += 1) {
+		 		params += " " + arguments[i] + ", ";
+		 		addParam(m,"arg_" + i,arguments[i]);
+		 		
+		 	}
+		 
+		 	executeLocalCommand(m);
+		 	//alert(commandName +"(" + params.trim() + ")");
+		 }	
+		 	
+	     },
+		 id:"AgentIdea Framework"};
+
+}
 
 
 //----------------------------------------------------- delegate
@@ -39,11 +79,13 @@ function delegate(scope, method, overrideArguments){
 		{
 			logDiv.style.display = "block";
 			o.value = "hide debug";
+			//alert('hide');
 		}
 		else
 		{
 			logDiv.style.display = "none";
 			o.value = "show debug";
+			//alert('show');
 		}
 			
 	};
@@ -144,13 +186,22 @@ function displayMsg(s,severity)
 
 function log(s,color)
 {
-    var divLog =  TheUte().findElement("divLog","div");
-    if(divLog != null)
-    {
-        divLog.innerHTML = s + "<br />" + divLog.innerHTML;
-        if(color != null)
-        	divLog.style.backgroundColor = color;
-    }
+		var divLog =  TheUte().findElement("divLog","div");
+		
+		//if(divLog.style.display == "block")
+		//{
+			//alert(s);
+		    if(divLog != null)
+		    {
+		        divLog.innerHTML = s + "<br />" + divLog.innerHTML;
+		        if(color != null)
+		        	divLog.style.backgroundColor = color;
+		    }
+		    
+	    //}
+    
+   
+    
 }
 
 function trace(s)
