@@ -1,5 +1,8 @@
-// GRID PROTOTYPE
+/**
 
+	@description: core framework table based DOM grid
+
+*/
 
 function newGrid2(id,rows,cols,values,border,aGUID)
 {

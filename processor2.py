@@ -7,13 +7,16 @@ import time
 #to do: path append issues ...
 
 sys.path.append("C:\inetpub\wwwroot\\net4\pyInetPub\\DieTafel\core\src\src")
+sys.path.append("C:\inetpub\wwwroot\\net4\pyInetPub\\DieTafel\core\src\custom")
+sys.path.append("C:\inetpub\wwwroot\\net4\pyInetPub\\DieTafel\core\src\framework")
 
 import core
 
 """
        Windows IIS ISAPI pyISAPIe entry point
-       POST to XML-RPC interface to BASE64 encoded Macro requests
+       FORM POST from XML-RPC interface to BASE64 encoded Macro requests
        expect call from XMLHTTP object in Firefox or MSXMLHTTP in IE
+       application/x-www-form-urlencoded
 """
 
 
@@ -26,6 +29,7 @@ def Request():
     Header("Content-type: text/html")
 
     
+    #$to do: check was a FORM application/x-www-form-urlencoded REQUEST
     #post data is base64 encoded
     post64 = Read()
     postClear = post64.decode('base64','strict')

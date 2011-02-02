@@ -1,5 +1,7 @@
-/*
-	CORE commands
+/**
+
+	@description: core framework commands
+
 */
 
 
@@ -133,15 +135,12 @@ function cmdLoadAppSpecificJS(macro)
   		
   		//var expression = "(" + moduleToPass + "(\"" + J64 + "\"," + oPanel + "); )" ;
   		var expression = moduleToPass + "(tableObj,oPanel);";
-  		log("");
-    	log("about to eval() expression [" + expression + "]");
-    	log("");
+  		//log("");
+    	//log("about to eval() expression [" + expression + "]");
+    	//log("");
     	eval(expression);
     	
     	
   
   	}
-    
-	
-
 }

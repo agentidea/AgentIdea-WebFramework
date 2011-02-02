@@ -1,16 +1,23 @@
+/**
+    Client JavaScript config settings file
+*/
 
-//----------------------------------
-//		AgentIdea Web Framework
-//		Config
-//----------------------------------		
-
-//      Client JavaScript settings file
-
-
-
+//
 // endpoint destination IP address or Domain Name
+//
 
-var dest = "service.agentidea.com";
-//var dest = "111.111.111.111";
+//
+// WINDOWS
+//
+var dest = "localhost";
+var url = "http://"+ dest +"/DieTafel/processor2.py";
 
-var url = "http://"+ dest +"/GLUCOSE/processor2.py";
+
+//
+// UNIX
+//
+
+//var dest = "184.106.112.115";
+//var url =  "http://"+ dest +"/table";
+
+alert("loading");

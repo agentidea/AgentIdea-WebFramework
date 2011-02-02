@@ -1,8 +1,8 @@
 #
-# APACHE WSGI entry point ... rename to index.wsgi
+# APACHE WSGI entry point
 #
 
-# REFACTOR !!! HORRIBLE TMP JOB ...
+# $to do: REFACTOR !!! HORRIBLE TMP JOB ...
 
 import json
 from urllib import unquote_plus
@@ -22,11 +22,10 @@ def application(environ, start_response):
             content_type = environ['CONTENT_TYPE'].lower()
             
             #application/x-www-form-urlencoded; charset=UTF-8
-            #if content_type.lower() == 'application/x-www-form-urlencoded':
             if not 'application/x-www-form-urlencoded' in content_type:
             	 output += "content-type [{0}] not supported".format(content_type)
             else:
-            	 # was really a FORM POST 
+            	#Proper FORM POST 
                 #retrieve the POST http://bit.ly/icvahV
                 post64 = environ['wsgi.input'].read(int(environ['CONTENT_LENGTH']))
                 postClear = post64.decode('base64','strict')
@@ -48,7 +47,7 @@ def application(environ, start_response):
     output += "<hr/>"
     output += "<pre style='font-size:6pt;'>"
     #output += core.ConvertDictToString(environ)
-    output += "POST only to this system"
+    output += "POST (application/x-www-form-urlencoded) FORM method only to this endpoint -- METHOD [%s] is UNSUPPORTED" %  environ['REQUEST_METHOD'].upper()
     output += "</pre>"
 
 
