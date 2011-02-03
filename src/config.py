@@ -37,12 +37,12 @@ class info(object):
     
     
     #WINDOWS
-    #LogPath ="C:\inetpub\wwwroot\\net4\pyInetPub\DieTafel\core\src\log"
-    #PathSep = '\\'
+    LogPath ="C:\inetpub\wwwroot\\net4\pyInetPub\DieTafel\core\src\log"
+    PathSep = '\\'
     
     #UNIX
-    LogPath = "/var/wsgi/tafel/log"
-    PathSep = '/'
+    #LogPath = "/var/wsgi/tafel/log"
+    #PathSep = '/'
     
     Log = "pyLog.txt"
     LogFile = "{0}{1}{2}".format(LogPath,PathSep,Log)
