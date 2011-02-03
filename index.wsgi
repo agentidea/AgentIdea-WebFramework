@@ -6,8 +6,14 @@
 
 import json
 from urllib import unquote_plus
-import core
+#import core
 
+import sys
+sys.path.append('/var/wsgi/tafel/')
+
+from src.framework.core import Utils
+from src.framework.core import log
+from src.framework.core import Framework as fwk
 
 def application(environ, start_response):
     status = '200 OK'
@@ -30,8 +36,8 @@ def application(environ, start_response):
                 post64 = environ['wsgi.input'].read(int(environ['CONTENT_LENGTH']))
                 postClear = post64.decode('base64','strict')
                 macroDict = json.loads(postClear)
-                cmd = core.ParseMacroDict(macroDict)
-                retEnv = core.processCommand(cmd)
+                cmd = fwk().ParseMacroDict(macroDict)
+                retEnv = fwk().processCommand(cmd)
 
                 output = retEnv.toJSON()
                 response_headers = [('Content-type', 'text/html'),
@@ -51,9 +57,6 @@ def application(environ, start_response):
     output += "</pre>"
 
 
-    ute = core.Utils()
-    ts = ute.Timestamp()
-    output += "<div style='color:red;'>timestamp on server was {0}</div>".format(str(ts))
     response_headers = [('Content-type', 'text/html'),
         ('Content-Length',str(len(output)))]
 
