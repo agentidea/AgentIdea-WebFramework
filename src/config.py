@@ -30,9 +30,11 @@ class info(object):
     
     appLogoImage = "cropped.jpg"
     nav = [
-           {'name':'new event','A':"APP.showNewTableForm('west');"},
-           {'name':'event admin','A':"ShowEvents('west');"},
-           {'name':'about','A':"ShowAbout('west');"},
+           
+           {'name':'New Table','A':"FWK.say('ShowNewTable','west');"},
+           {'name':'Admin','A':"FWK.say('ShowEvents','west');"},
+           {'name':'About','A':"FWK.say('ShowAbout','west');"},
+           
            ]
     
     
