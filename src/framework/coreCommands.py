@@ -3,10 +3,7 @@
 """
 import urllib
 from src.framework.core import log, Utils, Command, ReturnEnvelope
-from src.framework import treePattern as tp
 from src.config import info
-from pymongo import objectid as OID
-from src.framework import mongo
 
 class cmdRemoveRemoteLog:
     def executeCommand(self,command):
@@ -35,7 +32,7 @@ class cmdShowRemoteLog:
         s = "<div id='windowRemoteLog' class='clsPanel'>"
         s += "<b>Server Log Remote View</b>"
         s += "<span id='xRemoteLog' title='close panel' class='clsXWindowX' onclick=\" FWK.say('ClearXwindow',this.id); \">x</span>"
-        s += "<div class='clsLog'><textarea class='clsTextAreaLog'>"
+        s += "<div class='clsLog'><textarea id='TexAreaLog' class='clsTextAreaLog'>"
         s += Utils().tail(info.LogFile,intLines)
         s += "</textarea></div>"
       
@@ -61,7 +58,6 @@ class cmdShowAbout:
         s += "<div class='clsAbout'>{0} ver {1}.{2}.{3}</div>".format(info.appName,info.versionMajor,info.versionMinor,info.versionRevision)
         s += "<div class='clsAbout'>db://{0}:{1} db name: {2}</div>".format(info.dbIP,info.dbPort,info.dbDefault)
         s += "<div class='clsAbout'>logging to {0} path</div>".format(info.LogFile)
-        s += "<div class='clsAbout'><input type='button' value='show server log' onclick=\" FWK.say('DisplayLog','east',25); \" /></div>".format(info.LogFile)
         s += "</div>"
         
         re = ReturnEnvelope()
