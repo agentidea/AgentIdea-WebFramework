@@ -63,16 +63,16 @@ if(!APP) {
 
 				log("processing invites for table# " + objTable.tableNumber);
 
-				var s = " Dear {guest.firstName}, ";
+				var s = "Dear {guest.firstName}, ";
 				s += " \r\n\r\n";
-				s += " You are invited to attend table #" + objTable.tableNumber;
+				s += "You are invited to attend table #" + objTable.tableNumber;
 				
-				s += " at " + objTable.location.venue;
+				s += " \r\nat " + objTable.location.venue;
 				
 				s += "\r\n";
 				
 				
-				if( objTable.location.url != null )
+				if( objTable.location.url != null && objTable.location.url.trim().length > 0)
 				{
 					s += " \r\n";
 					s += " Table venue website is ";
@@ -81,19 +81,24 @@ if(!APP) {
 					s += " \r\n";
 				}
 				
-				s += " on " + objTable.meta.date;
+				s += "on " + objTable.meta.date;
 				s += "  at " + objTable.meta.time;
 				s += "\r\n";
 				
 				
 				
 				s += "\r\n";
-				s += " The address is," 
+				s += "The address is," 
 				s += "\r\n";
 				s += "\t" + objTable.location.street;
 				s += "\r\n";
-				s += "\t" + objTable.location.street2;
-				s += "\r\n";
+				
+				if(objTable.location.street2.trim().length > 0)
+				{
+					s += "\t" + objTable.location.street2;
+					s += "\r\n";
+				}
+				
 				s += "\t" + objTable.location.city;
 				s += "\r\n";
 				s += "\t" + objTable.location.state;
@@ -106,11 +111,17 @@ if(!APP) {
 				s += " We look forward to seeing you there";
 				
 				s += "\r\n\r\n";
-				s += "Thanks! ";
+				s += "Thanks, ";
 				s += "\r\n";
-				for(host in objTable.hosts)
-				{
-					s += " " + objTable.hosts[host].firstName;
+				s += "\r\n";
+				
+				var numHosts = objTable.hosts.length;
+				
+				var k;
+				for(k=0;k<numHosts;k++) {
+				//for(host in objTable.hosts)
+				//{
+					s += " " + objTable.hosts[k].firstName;
 					s += " &";
 					
 				}
@@ -119,37 +130,82 @@ if(!APP) {
 				s = s.trim();
 				s = s.substring(0,s.length-1);
 				
+				
+				//craft guest list
+				var numGuests = objTable.guests.length;
+				
+				var p;
+				
+				var GuestVals = [];
+				
+				
+				
+				
+				for(p=0;p<numGuests;p++) {
+				
+					var dvGuest = document.createElement("div");
+					var txtGuestName = objTable.guests[p].firstName + " " + objTable.guests[p].lastName
+					var txtGuestNameCompact = objTable.guests[p].firstName.trim() + "" + objTable.guests[p].lastName.trim();
+					var nodeGuest = document.createTextNode(txtGuestName);
+					GuestVals.push(dvGuest.appendChild(nodeGuest));	
+					 
+					var GuestCheckbox = TheUte().getCheckbox("chk_guest_" + txtGuestNameCompact,true ,txtGuestName,null);
+					GuestVals.push(GuestCheckbox);
+				
+				}
+				
+				var gridGuests = newGrid2('guestGrid',GuestVals.length/2,2,GuestVals);
+				gridGuests.init(gridGuests);
+				
+				var dvGuestPanel = document.createElement("DIV");
+				dvGuestPanel.appendChild(gridGuests.gridTable);
+				
+				
 				var _txtInvite  = TheUte().getTextArea(s,'txtInvite',null,null,'clsTextArea');
 				_txtInvite.className = "clsInvite";
 				_txtInvite.title = "";
 				
 				var lblInvite = document.createTextNode("Invitation Template:");
+				var lblGuestList = document.createTextNode("Guests:");
 				
 				var vals = [];
 				vals.push( lblInvite );
-				vals.push(null);
 				vals.push( _txtInvite  );
-			
-				vals.push( null);
+				vals.push( lblGuestList);
+				vals.push( dvGuestPanel );
 				
-				var sendCmd = TheUte().getButton("cmdSend","send invite to all","send invites to all",null,"clsActionButton");
 				
-				sendCmd.onclick = function()
+				var cmdPreview = TheUte().getButton("cmdPreview","preview","preview and edit invites before sending",null,"clsActionButton");
+				
+				cmdPreview.onclick = function()
 				{
-					alert("to do: sending invites to all");
-				}
+					log("get guest list");
+					
+					var chkGuests = document.getElementsByTagName("input");
+					
+					var q = 0;
+					for(q=0;q<chkGuests.length; q++) {
+					
+						var g = chkGuests[q];
+						
+						if(g.id.startsWith("chk_guest_"))
+						{
+							var guestName = g.id.pull("chk_guest_");
+							
+							log(guestName);
+							if(g.checked) { log(guestName); }
+						}
+					
+					}
+					
+				};
 				
-				var cmdSendIndividually = TheUte().getButton("cmdSendIndividually","send invite individually","send invites to all",null,"clsActionButton");
 				
-				cmdSendIndividually.onclick = function()
-				{
-					alert("to do: sending one by one, with option to modify message for each guest ...");
-				}
 				
-				vals.push(sendCmd);
-				vals.push(cmdSendIndividually);
+				vals.push(cmdPreview);
+				
 			
-				var g = newGrid2('inviteGrid',vals.length,1,vals);
+				var g = newGrid2('inviteGrid',vals.length,2,vals);
 				g.init(g);
 			
 				attachPoint.appendChild( g.gridTable );
@@ -158,17 +214,7 @@ if(!APP) {
 			
 			},
 	
-			showNewTableForm: function(panel){
 			
-			  var oPanel = document.getElementById(panel);
-			  if(oPanel != null){
-			    ClearBottomPanels();
-			    this.tafelCreateForm(oPanel);
-			  }
-			  else{
-			  	alert("no panel " + panel + " found");
-			  }
-			},
 	
 			validateUsers: function(userList)
 			{

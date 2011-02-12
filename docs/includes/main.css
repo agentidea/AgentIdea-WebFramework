@@ -1,3 +1,17 @@
+.clsPageBody
+{
+	
+	background-color:brown;
+	/* background: url("../images/blackOak2.jpg") 50% 50% repeat; */
+  background-image: url("../images/blackOak.jpg");
+  background-position: 50% 50%;
+  background-repeat: repeat;
+	
+		
+	
+}
+
+
 .clsHyperlink
 {
 

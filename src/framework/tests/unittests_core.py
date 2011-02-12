@@ -29,10 +29,20 @@ class TestCoreComponents(unittest.TestCase):
         info.LogPath = """z:\yellowBrickRoad"""
         self.assertRaises(Exception,log,"where is the wicked witch of the east?")
         info.LogPath = origLogPath
-           
+         
+    def test_info2(self):
+        dict = {'king':77}
+        fxn = lambda x: x*2
+        
+        if self.shouldPrintVerbose:
+            Utils().interrogate(dict)
+            print "____"
+            Utils().interrogate(fxn)
+              
     def test_peekAtLog(self):
-        s = Utils().tail(info.LogFile,25)
-        print s
+        if self.shouldPrintVerbose:
+            s = Utils().tail(info.LogFile,25)
+            print s
     
     def test_nav(self):
         nav = info.nav
@@ -58,6 +68,16 @@ class TestCoreComponents(unittest.TestCase):
         #print "onblur JavaScript [%s][%s]" % (c.onblur_JScript.decode('base64','strict'),c.onblur_JScript)
 
 
+    def test_mailer(self):
+        from src.framework.mail import message,postMan
+        
+        msg = message('g@agentidea.com','grantsteinfeld@gmail.com','test','body of message')
+        po = postMan()
+        po.sendMail(msg)
+        
+        
+        
+        
       
 if __name__ == '__main__':
     unittest.main()

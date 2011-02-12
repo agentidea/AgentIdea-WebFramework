@@ -29,6 +29,9 @@ String.prototype.rtrim = function() {
 	return this.replace(/\s+$/,"");
 }
 
+
+
+
 String.prototype.startsWith = function(pattern) {
 	return (this.match("^"+pattern)==pattern)
 }

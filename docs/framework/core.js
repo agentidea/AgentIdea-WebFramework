@@ -61,34 +61,9 @@ if(!FWK){
 }
 
 
-//----------------------------------------------------- delegate
-// call a function forced to a specific scope
-function delegate(scope, method, overrideArguments){
-  return function(){
-    var args = (overrideArguments)?overrideArguments:arguments;
-    return method.apply(scope, args);
-  }
-}
 
 
-	toggleLog = function(o)
-	{
-		var logDiv = document.getElementById("divLog");
-		
-		if(logDiv.style.display == "none")
-		{
-			logDiv.style.display = "block";
-			o.value = "hide debug";
-			log("logging on");
-		}
-		else
-		{
-			logDiv.style.display = "none";
-			o.value = "show debug";
-			log("logging off");
-		}
-			
-	};
+	
 
 
 function xmlHttp_callback() 
@@ -156,6 +131,25 @@ function displayMsg(s,severity)
     }
 }
 
+	toggleLog = function(o)
+	{
+		var logDiv = document.getElementById("divLogWindow");
+		
+		if(logDiv.style.display == "none")
+		{
+			logDiv.style.display = "block";
+			o.value = "hide debug";
+			log("logging on");
+		}
+		else
+		{
+			logDiv.style.display = "none";
+			o.value = "show debug";
+			log("logging off");
+		}
+			
+	};
+	
 	ClearMessages = function(){
 	
 		displayMsg("");
@@ -180,16 +174,18 @@ function displayMsg(s,severity)
 		WriteToPanel('west','');
 	
 	};
+	
+
 
 
 
 
 function log(s,color)
 {
-		var divLog =  TheUte().findElement("divLog","div");
+		var divLogWindow =  TheUte().findElement("divLogWindow","div");
+		var divLog       =  TheUte().findElement("divLog","div");
 		
-		if(divLog.style.display == "block")
-		{
+		if(divLogWindow.style.display == "block") { 		//only log if log window is open
 			//alert(s);
 		    if(divLog != null)
 		    {
@@ -227,6 +223,12 @@ function processResponse(res)
        //$to do: understand what the error was.
        log("RESPONSE eval() error :: " + e.description , 'black');
        log("JSON response RECIEVED was this <<" + res + ">> ");
+       
+       if( res.indexOf('unable to connect to MongoDB') != -1)
+       {
+       		displayMsg("Server Error, MongoDB is not running nor reachable",msgCode.error);
+       }
+       
        return;
        
      }
@@ -254,15 +256,20 @@ function executeLocalCommand(macro)
     	eval(preJS);
     	
     } catch(exp) {
-    	if(exp.description !== undefined) {
-    		log("WARN: There is a problem with the PreJavascript " + exp.description);
+    	if(preJS !== undefined) {
+    	    
+    		log("WARN: In command ["+ macro.name +"]There could a problem with the PreJavascript " + exp.description);
     		log("preJavaScript[" + preJS + "]");
     	}
     	
     }
     
-    //alert("about to eval in executeLocalCommand :: [" + s + "]" );
+    
     var s = "cmd" + macro.name + "(macro);";
+    log("LOCAL :: eval(" + s + ")" );
+    
+    //$to do: what if the eval fails ... there is no inspection of the JS objects here ...
+    // if commands were part of a namespace, like CMD.showThisAndThat(macro); it would be possible to reflect hasOwnProperty();
     
     eval(s);
     

@@ -21,16 +21,17 @@
 	window.onload = function()
 	{
 
-		ShowNavigation("farnorth");
+		FWK.say('ShowNavigation','farnorth');
 
 	}
 
+//clsPageBody
 
 	</script>
 
 </HEAD>
 
-<BODY>
+<BODY class="">
 
 
 	<table border='0'>
@@ -89,13 +90,24 @@
     <table>
 
     	<tr>
-			<td><DIV id="farsouth"></DIV></td>
+			<td><DIV id="farsouth"></DIV></td><td><DIV id="farsoutheast"></DIV></td>
 		</tr>
 
     <tr>
+    
+    
 			<td>
-
-	<DIV id="divLog" class="clsLog" style='display:none;'>Log Window:</DIV>
+			
+	<DIV id="divLogWindow" class="clsLog" style='display:block;'>	
+	<table border="1"><tr><td><input type='button' value='show server log' class="clsButtonLight" onclick="FWK.say('DisplayLog','farsoutheast',50);" /></td></tr>
+	<tr><td>
+		<DIV id="divLog" class="clsLog" style='display:block;'></DIV>
+	</tr></td>
+	</table>
+	</DIV>	
+	
+	
+	
 			</td>
 		</tr>
 	</table>

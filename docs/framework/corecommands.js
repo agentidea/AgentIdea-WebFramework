@@ -6,6 +6,26 @@
 
 
 
+	cmdShowNavigation = function(macro)
+	{
+		var m = newMacro("ShowNavigation");
+		var panel = macro.parameters[0].value;
+		addParam(m,"panel",panel);
+		processJSON(m);
+
+	};
+	
+
+	cmdShowAbout = function(macro)
+	{
+		ClearBottomPanels();
+		ClearMessages();
+		var panel = macro.parameters[0].value;
+		var m = newMacro("ShowAbout");
+		addParam(m,"panel",panel);
+		processJSON(m);
+	};
+
 function cmdAlertAndRefresh(macro)
 {
    cmdAlert(macro);
@@ -47,6 +67,20 @@ function cmdDisplayLog(macro)
 	addParam(m,"lines",lines);
 	//addParam(m,"file","pyLog.txt");
 	processJSON(m);
+	
+	
+	var TexAreaLog = document.getElementById("TexAreaLog");
+	
+	try {
+		//sroll to more or less the end of the text area
+		TexAreaLog.scrollTop = ( TexAreaLog.scrollHeight + TexAreaLog.clientHeight ) * 2;
+	}
+	catch(scrollingError) {
+		log("log window scrolling error :: " + scrollingError.description);
+	}
+
+
+		
 
 }
 

@@ -150,9 +150,9 @@ class dcShowEvents:
             s += "<td>{0}</td>".format(ev['meta']['time'])
             s += "<td>{0}</td>".format(len(ev['hosts']))
             s += "<td>{0}</td>".format(len(ev['guests']))
-            s += "<td><input class='clsGridButton' type='button' value='edit' id='cmd_{0}_edit' onclick=\"EditEvent(this,'{1}','{2}');\" /></td>".format(ev['tableNumber'],ev['_id'],panel)
-            s += "<td><input class='clsGridButton' type='button' value='delete' id='cmd_{0}_delete' onclick=\"DeleteEvent(this,'{1}','{2}','{3}');\" /></td>".format(ev['tableNumber'],ev['_id'],panel,ev['tableNumber'])
-            s += "<td><input class='clsGridButton' type='button' value='process invites' id='cmd_{0}_proc' onclick=\"ProcessInvites(this,'{1}','{2}');\" /></td>".format(ev['tableNumber'],ev['_id'],panel)
+            s += "<td><input class='clsGridButton' type='button' value='edit' id='cmd_{0}_edit' onclick=\"FWK.say('EditEvent','{1}','{2}');\" /></td>".format(ev['tableNumber'],ev['_id'],panel)
+            s += "<td><input class='clsGridButton' type='button' value='delete' id='cmd_{0}_delete' onclick=\"FWK.say('DeleteEvent','{1}','{2}','{3}');\" /></td>".format(ev['tableNumber'],ev['_id'],panel,ev['tableNumber'])
+            s += "<td><input class='clsGridButton' type='button' value='process invites' id='cmd_{0}_proc' onclick=\"FWK.say('ProcessInvites','{1}','{2}');\" /></td>".format(ev['tableNumber'],ev['_id'],panel)
             s+= "</tr>"
         
         

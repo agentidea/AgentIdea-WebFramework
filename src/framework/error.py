@@ -33,8 +33,12 @@ class OutOfSequenceException(Exception):
         self.value = value
     def __str__(self):
         return repr(self.value) 
-               
 class CommandNotFoundException(Exception):
+    def __init__(self,value):
+        self.value = value
+    def __str__(self):
+        return repr(self.value)                    
+class SendMailException(Exception):
     def __init__(self,value):
         self.value = value
     def __str__(self):

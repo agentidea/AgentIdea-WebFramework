@@ -2,97 +2,115 @@
 mailer code
 """
 import smtplib
+from copy import deepcopy
+
 from smtplib import *
 from src.config import info
 from scratch.simple import *
+from src.framework.error import SendMailException
+from src.framework.core import Utils
 
-class message(object):
-    def __init__(self,frm,to,subject,body):
-        self._from = frm
-        self._to = to
-        self._subject = subject
-        self._body = body
-    def get_subject(self):
-        return self._subject
-    def get_to(self):
-        return self._to
-    def get_body(self):
-        return self._body
-    def get_from(self):
-        return self._from
-        
-    subject = property(get_subject)
-    frm = property(get_from)
-    to = property(get_to)
-    body = property(get_body)
+#from functional import *
+
+message = {
+           'subject':None,
+           'body64':None,
+           'html64':None,
+           'from':None,
+           'replyto':None,
+           'to':[],
+           'cc':[]
+           }
+
+messageToJSON = lambda  message: json.dumps(message)
+
+def newMessage(msgFrom,replyto,to,subject,cc=None,body=None,html=None):
+    """ new email message from/to/subject required """
+    
+    msg = deepcopy(message)
+    msg['from'] = msgFrom
+    msg['to'] = to
+    msg['subject'] = subject
+    
+    if(cc): msg['cc'] = cc
+    if(replyto): msg['replyTo'] = replyto
+    if(body): msg['body64'] = body.encode('base64','strict')
+    if(html): msg['html64'] = html.encode('base64','strict')
+    
+    return msg
 
     
-class postOffice():
-    def __init__(self):
-        pass
-    
-    def sendMail(self,message,format):
-        """send message in text or/and html format = 'text' or 'html' """
+def sendMail(message):
+    """send message in text or/and html format = 'text' or 'html' """
 
-        from email.mime.multipart import MIMEMultipart
-        from email.mime.text import MIMEText
+    from email.mime.multipart import MIMEMultipart
+    from email.mime.text import MIMEText
+    toList = ','.join(message['to'])
+    
+    # Create message container - the correct MIME type is multipart/alternative.
+    msg = MIMEMultipart('alternative')
+    msg['Subject'] = message['subject']
+    msg['From'] = message['from']
+    msg['To'] = toList
+    
+    if(message['cc']): msg['Cc'] = ','.join(message['cc'])
+    
+    if(message['body64'] != None):
+        text = message['body64'].decode('base64','strict')
+        msg.attach(MIMEText(text, 'plain'))
+    
+    if(message['html64'] != None):
+        html = message['html64'].decode('base64','strict')
+        msg.attach(MIMEText(html, 'html'))
+    
+    # Send the message via local SMTP server.
+    smtpClient = None
+    
+    try:
+        smtpClient = smtplib.SMTP(info.smtpServer)
+        smtpClient.login(info.smtpUser, info.smtpPwd)
+        #sendmail function takes 3 arguments: sender's address, recipient's address 
+        #and message to send - here it is sent as one string. """
+
+        res = smtpClient.sendmail(message['from'], toList, msg.as_string())
         
-        me = message.frm
-        you = message.to
+        if(len(res.keys())>0):
+            raise SendMailException("sendmail exception was %s" % ( Utils().ConvertDictToString(res)) )
         
-        # Create message container - the correct MIME type is multipart/alternative.
-        msg = MIMEMultipart('alternative')
-        msg['Subject'] = message.subject
-        msg['From'] = me
-        msg['To'] = you
+        print " message sent"
+    except SMTPException:
+        print "Error: unable to send email"
         
-        # Create the body of the message (a plain-text and an HTML version).
-        text = "Hi!\n\n%s \n\nHow are you?\n\nHere is the link you wanted:\nhttp://www.python.org"
-        html = """\
-        <html>
-        <head></head>
-        <body>
-          <p>Hi!<br>
-             <b>%s</b>
-             <br>
-             Here is the <a href="http://www.python.org">link</a> you wanted.
-          </p>
-        </body>
-        </html>
-        """
-        
-        html = html % (message.body)
-        text = text % (message.body)
-        # Record the MIME types of both parts - text/plain and text/html.
-        part1 = MIMEText(text, 'plain')
-        part2 = MIMEText(html, 'html')
-        
-        # Attach parts into message container.
-        # According to RFC 2046, the last part of a multipart message, in this case
-        # the HTML message, is best and preferred.
-        
-        msg.attach(part1)
-        if(format == 'html'):
-            msg.attach(part2)
-        
-        # Send the message via local SMTP server.
-        try:
-            s = smtplib.SMTP(info.smtpServer)
-            s.login(info.smtpUser, info.smtpPwd)
-        # sendmail function takes 3 arguments: sender's address, recipient's address
-        # and message to send - here it is sent as one string.
-            res = s.sendmail(me, you, msg.as_string())
-        except SMTPException:
-            print "Error: unable to send email"
-        s.quit()
-        print res
-        
+    if smtpClient:
+        smtpClient.quit()
 
         
 if(__name__ == '__main__'):
-    for elem in list(range(2)):
-        bod = generate("S")
-        sub = "subject_" + str(elem)
-        print bod
-        print sub
-        postOffice().sendMail(message("g@agentidea.com","grantsteinfeld@gmail.com",sub,bod),'text')
+    
+    emails = []
+    
+    '''create list of emails to send'''
+    for elem in list(range(3)):
+        bod = generate()
+        sub = "Subject example " + str(elem)
+        emails.append( newMessage("grantsteinfeld@gmail.com","grantsteinfeld@gmail.com",["grantsteinfeld@gmail.com"],sub,None,bod) )
+    
+    
+    '''send mail by way of map() '''
+    map(sendMail,emails)   
+    
+    import json
+    
+    for mail in emails:
+        print mail['subject']
+        print messageToJSON(mail)
+    
+    
+
+        
+        
+        
+        
+        
+        
+        

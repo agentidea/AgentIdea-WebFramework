@@ -50,6 +50,17 @@ class info(object):
     LogFile = "{0}{1}{2}".format(LogPath,PathSep,Log)
     
     
+    
+    smtpServer = "mail.agentidea.com"
+    smtpUser = "mail_daemon@agentidea.com"
+    smtpPwd = "jy1met2"
+    
+    bitlyKey = 'R_3f5c6a92ce6126b0da95ae9b3821f91b'
+    bitlyUsr = 'grantsteinfeld'
+    
+    twitterAPI = 'aws3PhOfKfulnKNtyz4vQ' 
+    """ twitter API key for AgentTweet"""
+    
     #command on load string JS as base 64
     onCommandLoad64 = "Ly9hZGQgb25Db21tYW5kTG9hZCBKYXZhU2NyaXB0IGhlcmU="
     onCommandUnload64 = "Ly9hZGQgb25Db21tYW5kVW5sb2FkIEphdmFTY3JpcHQgaGVyZQ=="
