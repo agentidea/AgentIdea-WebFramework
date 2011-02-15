@@ -1,6 +1,7 @@
 import unittest
 
-from src.framework.core import log, Utils, Command
+from src.framework.core import log, Utils, Command, Kontext
+from src.framework.core import Framework as fwk
 from src.config import info
 
 
@@ -68,12 +69,26 @@ class TestCoreComponents(unittest.TestCase):
         #print "onblur JavaScript [%s][%s]" % (c.onblur_JScript.decode('base64','strict'),c.onblur_JScript)
 
 
-    def test_mailer(self):
-        from src.framework.mail import message,postMan
+    def test_CallingPingContextual(self):
         
-        msg = message('g@agentidea.com','grantsteinfeld@gmail.com','test','body of message')
-        po = postMan()
-        po.sendMail(msg)
+        kontext = Kontext()
+        kontext['REFERER'] = 'From a UNIT TEST'
+        
+        c = Command("Ping")
+        c.addParameter("name","echo")
+
+        from src.framework.core import Itinerary
+        
+        it = Itinerary(kontext)
+        it.addInCommand(c)
+        it = fwk().processItinerary(it)
+        
+        retJSON = fwk().CommandsToJSON(it.outCommands,it.kontext)
+        print retJSON
+        
+
+    def test_mailer(self):
+        pass
         
         
         

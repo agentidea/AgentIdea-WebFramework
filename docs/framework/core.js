@@ -41,7 +41,9 @@ if(!FWK){
 			 var i;
 			 var argLen = arguments.length;
 			 
-			 if(argLen > 1)
+			 log(argLen);
+			 
+			 if(argLen > 0)
 			 {
 			 	commandName = arguments[0];
 			 	
@@ -214,8 +216,6 @@ function processResponse(res)
      var resMacros = null;
      try
      { 
-     	
-     	
         resMacros = eval('(' + res + ')');
      }
      catch(e)

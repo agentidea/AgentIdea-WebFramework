@@ -13,16 +13,7 @@ from pymongo import objectid as OID
 from src.framework import mongo
 
 
-class dcPing:
-    def executeCommand(self, command):
-        name=command.params[0].val
-        
-        re = ReturnEnvelope()
-        displayCmd = Command("ReturnCommand")
-        displayCmd.addParameter('echo', name )
-        re.add(displayCmd)
-        
-        return re
+
         
         
 class dcSaveNewEvent:
@@ -57,13 +48,11 @@ class dcSaveNewEvent:
 
         s = "Saved new Table Event #%s" % ( str(tableNumber) )
 
-        re = ReturnEnvelope()
         displayCmd = Command('Display')
         displayCmd.addParameter('panel', panel)
         displayCmd.addParameter('html64', Utils().pack(s) )
         
-        re.add(displayCmd)
-        return re        
+        command.outCommands.append(displayCmd)       
     
  
 class dcDeleteEvent:
@@ -77,13 +66,30 @@ class dcDeleteEvent:
         mdb.deleteDocument(info.dbDefault, info.rootTableCollectionName, {'_id': OID.ObjectId(table_id) } )
         s = "Deleted Table #%s" % ( str(table_id) )
 
-        re = ReturnEnvelope()
         displayCmd = Command('Display')
         displayCmd.addParameter('panel', panel)
         displayCmd.addParameter('html64', Utils().pack(s) )
         
-        re.add(displayCmd)
-        return re     
+        command.outCommands.append(displayCmd)    
+
+class dcCreateInvitesOffTemplate:
+    def executeCommand(self,command):
+        """ prepare invitations """
+        panel = command.getValue("panel")
+        template64 = command.getValue("template64")
+        targetUsers = command.getValue("targetUsers")
+        eventGUID = command.getValue("eventGUID")
+        action = command.getValue("action")
+        """save | save+send """
+        
+        #apply template to all users
+        
+        
+        #persist invites
+        
+        #send
+        
+        #dsiplay status...
 
 class dcProcessInvites:
     
@@ -100,13 +106,12 @@ class dcProcessInvites:
         
         tableJSON = json.dumps(tableDoc)
         
-        re = ReturnEnvelope()
+        
         loadJS = Command('LoadAppSpecificJS')
         loadJS.addParameter('panel', panel)
         loadJS.addParameter('JSON64', Utils().pack(tableJSON) )
         loadJS.addParameter('JSmoduleToCall','APP.inviteMx')
-        re.add(loadJS)
-        return re
+        command.outCommands.append(loadJS)
     
 class dcShowEvents:
     
@@ -158,9 +163,9 @@ class dcShowEvents:
         
         s += "</table>"
         
-        re = ReturnEnvelope()
+        
         displayCmd = Command('Display')
         displayCmd.addParameter('panel', panel)
         displayCmd.addParameter('html64', Utils().pack(s) )
-        re.add(displayCmd)
-        return re    
+        
+        command.outCommands.append(displayCmd)   

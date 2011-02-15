@@ -5,6 +5,30 @@ import urllib
 from src.framework.core import log, Utils, Command, ReturnEnvelope
 from src.config import info
 
+
+
+class cmdInitialize:
+    def executeCommand(self,command):
+        
+        import uuid
+        guid = uuid.uuid1()
+        
+        
+        command.kontext['SessionGUID'] = guid
+        
+        
+        s = "initialize command called " + command.kontext['REFERER64']
+        
+        log("command %s - %s" % (command.name,s))
+        
+        
+        displayCmd = Command('Display')
+        displayCmd.addParameter('panel', 'west')
+        displayCmd.addParameter('html64', Utils().pack(s) )
+        command.outCommands.append(displayCmd)
+
+
+
 class cmdRemoveRemoteLog:
     def executeCommand(self,command):
         panel = command.getValue("panel")
@@ -14,12 +38,11 @@ class cmdRemoveRemoteLog:
         s = "removed server log file permanently"
         log("command %s - %s" % (command.name,s)) #log after the fact to make sure log file is clean looking ( not half the log event from this command
         
-        re = ReturnEnvelope()
+       
         displayCmd = Command('Display')
         displayCmd.addParameter('panel', panel)
         displayCmd.addParameter('html64', Utils().pack(s) )
-        re.add(displayCmd)
-        return re        
+        command.outCommands.append(displayCmd)        
        
 class cmdShowRemoteLog:
     def executeCommand(self,command):
@@ -41,12 +64,11 @@ class cmdShowRemoteLog:
         
         log("IN command %s( %s %s)" % (command.name,lines,panel)) #log after the fact to make sure log file is clean looking ( not half the log event from this command
         
-        re = ReturnEnvelope()
+        
         displayCmd = Command('Display')
         displayCmd.addParameter('panel', panel)
         displayCmd.addParameter('html64', Utils().pack(s) )
-        re.add(displayCmd)
-        return re        
+        command.outCommands.append(displayCmd)        
   
 class cmdShowAbout:
     
@@ -60,12 +82,11 @@ class cmdShowAbout:
         s += "<div class='clsAbout'>logging to {0} path</div>".format(info.LogFile)
         s += "</div>"
         
-        re = ReturnEnvelope()
+        
         displayCmd = Command('Display')
         displayCmd.addParameter('panel', panel)
         displayCmd.addParameter('html64', Utils().pack(s) )
-        re.add(displayCmd)
-        return re
+        command.outCommands.append(displayCmd)
 
 class cmdShowNavigation:
     
@@ -108,7 +129,7 @@ class cmdShowNavigation:
         w64 = Utils().pack(w)
         
         
-        re = ReturnEnvelope()
+        
         
         
         
@@ -138,18 +159,17 @@ class cmdShowNavigation:
         DisplayWindowTitle.addParameter('html64', w64 )
         
         
-        re.add(DisplayWindowTitle)
-        re.add(displayCmd)
-        return re
+        command.outCommands.append(DisplayWindowTitle)
+        command.outCommands.append(displayCmd)
 
 class cmdPing:
     def executeCommand(self, command):
         name=command.params[0].val
-        re = ReturnEnvelope()
+        
         displayCmd = Command("ReturnCommand")
         displayCmd.addParameter('echo', name )
-        re.add(displayCmd)
-        return re
+        
+        command.outCommands.append(displayCmd)
 
 
 

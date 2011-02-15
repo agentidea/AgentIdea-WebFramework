@@ -97,7 +97,7 @@ if(__name__ == '__main__'):
     
     
     '''send mail by way of map() '''
-    map(sendMail,emails)   
+    #map(sendMail,emails)   
     
     import json
     

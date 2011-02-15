@@ -9,7 +9,7 @@
 
 
 // WINDOWS
-var dest = "localhost";
+var dest = "127.0.0.1";
 var url = "http://"+ dest +"/DieTafel/processor2.py";
 
 

@@ -144,17 +144,32 @@ if(!APP) {
 				for(p=0;p<numGuests;p++) {
 				
 					var dvGuest = document.createElement("div");
-					var txtGuestName = objTable.guests[p].firstName + " " + objTable.guests[p].lastName
+					var dvEmail = document.createElement("div");
+					var txtGuestName = objTable.guests[p].firstName + " " + objTable.guests[p].lastName;
+					var txtEmail = document.createTextNode( objTable.guests[p].email );
 					var txtGuestNameCompact = objTable.guests[p].firstName.trim() + "" + objTable.guests[p].lastName.trim();
 					var nodeGuest = document.createTextNode(txtGuestName);
-					GuestVals.push(dvGuest.appendChild(nodeGuest));	
+					GuestVals.push(dvGuest.appendChild(nodeGuest));
+					GuestVals.push(dvEmail.appendChild(txtEmail));	
 					 
-					var GuestCheckbox = TheUte().getCheckbox("chk_guest_" + txtGuestNameCompact,true ,txtGuestName,null);
+					var GuestCheckbox = TheUte().getCheckbox("chk_guest_" + txtGuestNameCompact,'de-select user' ,txtGuestName,null);
+					GuestCheckbox.checked = true;
+					
+					GuestCheckbox.onclick = function() {
+					
+						if(this.checked) {
+							this.title='de-select user';
+						}else{
+							this.title='select user';
+						}
+					
+					};
+					
 					GuestVals.push(GuestCheckbox);
 				
 				}
 				
-				var gridGuests = newGrid2('guestGrid',GuestVals.length/2,2,GuestVals);
+				var gridGuests = newGrid2('guestGrid',GuestVals.length/3,3,GuestVals);
 				gridGuests.init(gridGuests);
 				
 				var dvGuestPanel = document.createElement("DIV");

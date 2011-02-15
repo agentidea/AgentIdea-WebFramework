@@ -5,7 +5,14 @@
 */
 
 
-
+	cmdIntialize = function(macro)
+	{
+	
+		var m = newMacro("Initialize");
+		processJSON(m);
+	
+	}
+	
 	cmdShowNavigation = function(macro)
 	{
 		var m = newMacro("ShowNavigation");

@@ -55,6 +55,13 @@ def log(s):
 # http://code.activestate.com/recipes/576750-pretty-print-xml/   
 
 class Framework(object):
+    
+    def processItinerary(self,itinerary):
+        """processes the commands in the itinerary"""
+        for cmd in itinerary.inCommands:
+            self.processCommand( cmd.set_itinerary(itinerary) )
+        return itinerary
+    
     def processCommand(self,cmd,commandCoreTuple = None):
         """ processess a Command dynamically """
         moduleID = None
@@ -66,8 +73,6 @@ class Framework(object):
         else:
             moduleID = commandCoreTuple[0]
             klassID =  commandCoreTuple[1] + cmd.name
-
-        ret = None
 
         try:
             c = self.LoadClass(moduleID,klassID)   
@@ -84,13 +89,13 @@ class Framework(object):
             raise
         
         try:
-            ret = c.executeCommand(cmd)
+            c.executeCommand(cmd)
             log("EXECUTE {0}".format(cmd.name))
         except:
             log("Error EXECUTE command %s %s" % (klassID,list(sys.exc_info())))
             raise
             
-        return ret
+        
     
     def LoadClass(self,moduleID,klassID):
         
@@ -118,6 +123,36 @@ class Framework(object):
             cmd.addParameter(param['name'], param['value'])
         return cmd
 
+    def CommandsToJSON(self,commandList,kontext):
+        """takes a list of commands and creates JSON repreentation"""
+        
+        json = "{"
+        json += " 'commands': ["
+        
+        for cmd in commandList:
+            json += cmd.toJSON()
+            json += ","
+            
+        json = json[:-1]
+        json += "]"
+        json += ","
+        
+        json += "'context':{"
+        
+        if(kontext):
+            for k in kontext:
+                json += "'{0}':'{1}',".format(k, kontext[k] )
+            json = json[:-1]
+            
+        json += "}"
+        
+        
+        
+        
+        json += "}"
+        return json
+            
+        
 
 class Utils(object):
     def reflectInfo(self,object, spacing=10, collapse=1):
@@ -202,6 +237,22 @@ class Utils(object):
     def removeFile(self,filePath):
         os.remove(filePath)
         
+class Kontext(dict):
+    """context dictionary"""
+    def setKeyValue(self,key,value):
+        self[key] = value
+        return self
+    
+    def getKeyValue(self,key):
+        return self[key]
+    
+    def KeyExists(self,key):
+        if( key in self):
+            return True
+        else:
+            return False
+        
+    
     
 class Command(object):
     def __init__(self, commandName):
@@ -209,10 +260,35 @@ class Command(object):
         self._parameterList = []
         self._preScript = info.onCommandLoad64
         self._postScript = info.onCommandUnload64
-
+        self._kontext = None
+        self._itinerary = None
+        self._outCommands = None
+        
     def get_name(self):
         return self._name
-        
+    
+    def set_itinerary(self,itinerary):
+        """reference to the itenerary """
+        self._itinerary = itinerary
+        self._kontext = itinerary.kontext
+        self._outCommands = itinerary.outCommands
+        return self
+    
+    def get_kontext(self):
+        """get a reference to the kontext dictionary"""
+        return self._kontext
+    def get_itinerary(self):
+        """get a reference to the itinerary dictionary"""
+        return self._itinerary
+    
+    def get_outCommands(self):
+        return self._outCommands
+    
+    kontext = property(get_kontext) 
+    itinerary = property(get_itinerary)
+    outCommands = property(get_outCommands)
+    
+      
     def get_params(self):
         return self._parameterList
     
@@ -223,7 +299,6 @@ class Command(object):
                 return param.val
             
         raise error.MissingParameterException("no parameter found for key [{0}]".format(key))
-
 
     def set_postScript(self,script64):
         self._postScript = script64
@@ -239,10 +314,10 @@ class Command(object):
 
     onload_JScript = property(get_preScript,set_preScript)
     onblur_JScript = property(get_postScript,set_postScript)
-    
-    
     name = property(get_name)
     params = property(get_params) 
+    
+    
     
     def addParameterAnon(self,val):
         index = len(self._parameterList) + 1
@@ -298,16 +373,33 @@ class Parameter(object):
     name = property(getName)
     val = property(getValue)    
 
+class Itinerary(dict):
+    def __init__(self,kontext):
+        self['inCommands'] = []
+        self['outCommands'] = []
+        self['kontext'] = kontext
+    def get_inCommands(self):
+        return self['inCommands']
+    def get_outCommands(self):
+        return self['outCommands']
+    def addInCommand(self,command):
+        self['inCommands'].append(command)
+    def addOutCommand(self,command):
+        self['outCommands'].append(command)
+    def get_Kontext(self):
+        return self['kontext']
+    
+    kontext = property(get_Kontext)  
+    inCommands = property(get_inCommands)
+    outCommands = property(get_outCommands)
+
 class ReturnEnvelope(object):
     def __init__(self):
         self.commands=[]
         self.TimeStamp = str(Utils().Timestamp())
-    
+
     def add(self,cmd):
         self.commands.append(cmd)
-        
-
-
     def toJSON(self):
         s = ""
         s += "{"
