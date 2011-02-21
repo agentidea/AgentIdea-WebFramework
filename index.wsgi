@@ -14,13 +14,17 @@ sys.path.append('/var/wsgi/tafel/')
 from src.framework.core import Utils
 from src.framework.core import log
 from src.framework.core import Framework as fwk
+from src.framework.error import InvalidRequestMethod
+from src.framework.core import Kontext
+from src.framework.core import Itinerary
+
 
 def application(environ, start_response):
     status = '200 OK'
 
     output = ""
 
-    # SEED relatvie application root as well as Document Root?
+    #SEED relatvie application root as well as Document Root?
     #documentRoot = environ['DOCUMENT_ROOT']
 
     if 'REQUEST_METHOD' in environ:
@@ -33,13 +37,25 @@ def application(environ, start_response):
             else:
             	#Proper FORM POST 
                 #retrieve the POST http://bit.ly/icvahV
+                
+                kontext = Kontext()
+                kontext['src'] = 'index.wsgi'
+                itinerary = Itinerary(kontext)
+                
                 post64 = environ['wsgi.input'].read(int(environ['CONTENT_LENGTH']))
                 postClear = post64.decode('base64','strict')
-                macroDict = json.loads(postClear)
-                cmd = fwk().ParseMacroDict(macroDict)
-                retEnv = fwk().processCommand(cmd)
+                #macroDict = json.loads(postClear)
+                #cmd = fwk().ParseMacroDict(macroDict)
+                #retEnv = fwk().processCommand(cmd)
 
-                output = retEnv.toJSON()
+				macroDict = json.loads(postClear)
+   
+    			cmd = fwk().ParseMacroDict(macroDict)
+    			itinerary.addInCommand(cmd)
+       			retEnvIT = fwk().processItinerary(itinerary)
+    			output = fwk().CommandsToJSON( retEnvIT.outCommands,retEnvIT.kontext )
+				
+                #output = retEnv.toJSON()
                 response_headers = [('Content-type', 'text/html'),
                             ('Content-Length',str(len(output)))]
 

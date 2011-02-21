@@ -12,12 +12,10 @@ class cmdInitialize:
         
         import uuid
         guid = uuid.uuid1()
+
+        command.kontext['SessionGUID'] = str(guid)
         
-        
-        command.kontext['SessionGUID'] = guid
-        
-        
-        s = "initialize command called " + command.kontext['REFERER64']
+        s = "<b>initialize command called </b>" + command.kontext['SessionGUID']
         
         log("command %s - %s" % (command.name,s))
         
@@ -25,6 +23,7 @@ class cmdInitialize:
         displayCmd = Command('Display')
         displayCmd.addParameter('panel', 'west')
         displayCmd.addParameter('html64', Utils().pack(s) )
+        
         command.outCommands.append(displayCmd)
 
 

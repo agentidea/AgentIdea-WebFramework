@@ -41,6 +41,8 @@ def Request():
     #log(Utils().ConvertDictToString(headers_in))
 
     kontext = Kontext()
+    kontext['src'] = 'processor2.py'
+    
     
     if ( 'CONTENT-TYPE' in headers_in):
         log('CONTENT-TYPE %s' % (headers_in['CONTENT-TYPE']))
@@ -68,7 +70,8 @@ def Request():
     
     end = time.time() - start
 
-    log("JSON SENT <<%s ... %s chars omitted>>]" % (str(retJSON)[0:300],(len(retJSON) -300) ))
+    log("JSON SENT <<%s>>]" % (str(retJSON)))
+    # log("JSON SENT <<%s ... %s chars omitted>>]" % (str(retJSON)[0:300],(len(retJSON) -300) ))
     log(" Processing took %s seconds -------------------------------- \n \n" % (str(end)))
 
  
