@@ -13,11 +13,12 @@ class cmdInitialize:
         
         import uuid
         guid = uuid.uuid1()
+        guid = Utils().pack(str(guid))
         panel = command.getValue("panel")
         
-        command.kontext['SessionGUID'] = str(guid)
+        command.kontext['SessionGUID'] = guid
         setKontext = Command('SetKontext')
-        setKontext.addParameter('SessionGUID', str(guid))
+        setKontext.addParameter('SessionGUID', guid)
         command.outCommands.append(setKontext)
         
         
