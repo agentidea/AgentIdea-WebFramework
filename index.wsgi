@@ -38,7 +38,7 @@ def application(environ, start_response):
             	#Proper FORM POST 
                 #retrieve the POST http://bit.ly/icvahV
                 
-                kontext = Kontext()
+           		kontext = Kontext()
                 kontext['src'] = 'index.wsgi'
                 kontext['referer'] = 'unknown'
                 
