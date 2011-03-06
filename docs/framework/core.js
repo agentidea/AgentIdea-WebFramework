@@ -9,12 +9,11 @@ var FWK;			//framework global
 
 var xmlHttpLocal = null;
 var SYNC = false;
-var gDisableAJAXcalls = false;
-var bCallBusyLock = false;
+//var gDisableAJAXcalls = false;
+//var bCallBusyLock = false;
 
 if(!FWK){
 	FWK = {
-	
 		 kontext: {},
 		 getKontext: function(key){ return this.kontext[key]; },
 		 setKontext: function(key,val){
@@ -142,6 +141,13 @@ function displayMsg(s,severity)
     }
 }
 
+	clearLocalLog = function()
+	{
+		var divLog       =  TheUte().findElement("divLog","div");
+		divLog.innerHTML = "-------------------------------------------------------------";
+	
+	};
+	
 	toggleLog = function(o)
 	{
 		var logDiv = document.getElementById("divLogWindow");
@@ -231,7 +237,7 @@ function processResponse(res)
      {
        //$to do: understand what the error was.
        log("RESPONSE eval() error :: " + e.description , 'black');
-       log("JSON response RECIEVED was this <<" + res + ">> ");
+       log("JSON response RECEIVED was this <<" + res + ">> ");
        
        if( res.indexOf('unable to connect to MongoDB') != -1)
        {
@@ -249,15 +255,60 @@ function processResponse(res)
         executeLocalCommand( resMacros.commands[i] );
      }
      
-     log("server timestamp " + resMacros.time );
+     
      
 }
 
+procTimeout = function(){
+//process local timeout
+	    var sessionTimeoutMinutes = FWK.getKontext("sessionTimeoutMinutes");
+	    if(sessionTimeoutMinutes)
+	    {
+	    	if(sessionTimeoutMinutes > 0)
+	    	{
+	    		var lastActive = FWK.getKontext("lastActive");
+	    		
+	    		if(lastActive) {
+	    			var now = new Date();
+	    			var nowT = now.getTime();
+	    			var lastT = lastActive.getTime();
+	    			
+	    			var difTms = nowT - lastT;
+	    			var difTsec = difTms / 1000;
+	    			var sessionTimeoutSeconds = sessionTimeoutMinutes * 60;
+	    			
+	    			log(difTsec + " :: " + sessionTimeoutSeconds);
+	    			
+	    			
+	    			if( difTsec > sessionTimeoutSeconds )
+	    			{
+	    				alert("Your session has timed out. \r\n\r\n You will be re-directed to the login screen");
+	    				location.href = location.href;
+	    				return true;
+
+	    			}  
+	    			
+	    		}
+	    		
+	    		FWK.setKontext("lastActive",new Date());
+	    	}
+	    }
+	    
+	    return false;
+	};
+
+
+
 function executeLocalCommand(macro)
 {
+
+	if(procTimeout()) { return; }
+
 	//
 	// PRE JS command
 	//
+	
+
 	
     try {
     
@@ -288,6 +339,20 @@ function executeLocalCommand(macro)
     // POST JS command
     //
     
+     try {
+    
+    	var postJS = TheUte().unravel(macro.postJS64);
+    	eval(postJS);
+    	
+    } catch(exp) {
+    	if(postJS !== undefined) {
+    	    
+    		log("WARN: In command ["+ macro.name +"]There could a problem with the PostJavascript " + exp.description);
+    		log("postJavaScript[" + postJS + "]");
+    	}
+    	
+    }
+    
     
 }
 
@@ -297,14 +362,18 @@ function processJSON(macro)
 	//PYTHON PEER
 	
 	
-	 if(bCallBusyLock == true || gDisableAJAXcalls == true)
-	    {
+	 //if(bCallBusyLock == true || gDisableAJAXcalls == true)
+	 //   {
 	         //$to do: why are some browsers re-entrant and others not????
-	        return;
-	    }
+	         // Firefox is ...
+	        // processJSON(macro);
+	       // log(macro.name + " was re-entrant");
+	        //return;
+	   // }
 	     
-	     
-	    bCallBusyLock = true;
+	    if(procTimeout()) { return; }
+
+	   // bCallBusyLock = true;
 	    
 	    xmlHttpLocal = getXMLHTTP();
 	    
@@ -340,7 +409,7 @@ function processJSON(macro)
 	        catch(exp)
 	        {
 	            alert("XMLHTTP COM error " + exp.description);
-	            gDisableAJAXcalls = true;
+	            //gDisableAJAXcalls = true;
 	        }
 	     
 	    }
@@ -675,7 +744,7 @@ function macro()
    this.name = _name;
    var _paramCount = 0;
    this.paramCount = _paramCount;
-   var _parameters = new Array();
+   var _parameters = []; //new Array();
    this.parameters = _parameters;
    var _UserCurrentTxID = "not_set_yet";
    this.UserCurrentTxID = _UserCurrentTxID;

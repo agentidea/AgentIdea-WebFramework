@@ -9,6 +9,7 @@
 	<script src="./framework/grid.js" language="javascript" type="text/javascript"></script>
 	<script src="./framework/PageUtils.js" language="javascript" type="text/javascript"></script>
 	<script src="./framework/functools.js" language="javascript" type="text/javascript"></script>
+	<script src="./framework/md5-min.js" language="javascript" type="text/javascript"></script>
 	<script src="./framework/json2.js" language="javascript" type="text/javascript"></script>
 	<script src="./framework/core.js" language="javascript" type="text/javascript"></script>
 	<script src="./custom/appSpecific.js" language="javascript" type="text/javascript"></script>
@@ -33,7 +34,7 @@
 
 <BODY class="">
 
-
+<center>
 	<table border='0'>
 
 		 <tr>
@@ -78,7 +79,8 @@
 
 
 
-	<DIV id="footer" class="clsFooter"> <br/><br/><input class="clsButtonLight" type="button" onclick="toggleLog(this);" value='show debug'/></DIV>
+	<DIV id="footer" class="clsFooter"> <br/><br/><input class="clsButtonLight" type="button" onclick="toggleLog(this);" value='show debug'/>
+													<input class="clsButtonLight" type="button" onclick="clearLocalLog();" value='clear local log' /></DIV>
 
 
 			</td>
@@ -111,6 +113,7 @@
 			</td>
 		</tr>
 	</table>
+	</center>
 </BODY>
 
 </HTML>

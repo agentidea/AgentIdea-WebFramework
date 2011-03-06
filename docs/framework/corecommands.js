@@ -19,18 +19,52 @@
 	
 	};
 	
+	cmdSignout = function(macro)
+	{
+	
+		ClearBottomPanels();
+		ClearMessages();
+		
+		var m = newMacro("Signout");
+		processJSON(m);
+		
+		
+		
+		
+	
+	};
 	cmdLocalLogin = function(macro)
 	{
-		log("local login");
+		
 		
 		var m = newMacro("Authenticate");
 		
 		var panel = macro.parameters[0].value;
-		var usr = document.getElementById("usr").value;
-		var pwd = document.getElementById("pwd").value;
+		var usr = document.getElementById("txtUsr");
+		var pwd = document.getElementById("txtPwd");
 		
-		addParam(m,"usr",TheUte().encode64(usr));
-		addParam(m,"pwd",TheUte().encode64(pwd));
+		
+		
+		
+		if(usr.value.trim().length == 0) {
+			displayMsg("username may not be blank",msgCode.warn);
+			usr.focus();
+			return;
+		}
+		
+		if(pwd.value.trim().length == 0) {
+		displayMsg("password may not be blank",msgCode.warn);
+			pwd.focus();
+			return;
+		}
+		
+		
+		var enc = hex_md5(pwd.value);
+		
+		//log("password encrypted for transmittal ... [" + enc + "]");
+		
+		addParam(m,"usr",TheUte().encode64(usr.value));
+		addParam(m,"pwd",TheUte().encode64(enc));
 		addParam(m,"panel",panel);
 		processJSON(m);
 	
@@ -38,17 +72,33 @@
 	
 	cmdShowNavigation = function(macro)
 	{
+		
+		ClearBottomPanels();
+		ClearMessages();
+
 		var m = newMacro("ShowNavigation");
+		
+		var panel = macro.parameters[0].value;
+		addParam(m,"panel",panel);
+		
+		processJSON(m);
+		
+	};
+	
+	
+	cmdShowAdmin = function(macro)
+	{
+		var m = newMacro("CommandsReflect");
 		var panel = macro.parameters[0].value;
 		addParam(m,"panel",panel);
 		processJSON(m);
-
-	};
 	
+	
+	};
 
 	cmdShowAbout = function(macro)
 	{
-		log("session id: " +  FWK.kontext.SessionGUID );
+		//log("session id: " +  FWK.kontext.SessionGUID );
 		
 		ClearBottomPanels();
 		ClearMessages();
@@ -147,7 +197,7 @@ function cmdClearXwindow(macro)
 }
 
 
-function cmdDisplay(macro)
+ cmdDisplay = function(macro)
 {
 
   var panel =  getParameterVal("panel",macro);
@@ -169,7 +219,7 @@ function cmdDisplay(macro)
   	alert("no panel " + panel + " found");
   }
 
-}
+};
 
 function cmdDisplayWindowTitle(macro)
 {

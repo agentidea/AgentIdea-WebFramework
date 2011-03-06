@@ -12,7 +12,7 @@ import time
 from urlparse import urlparse
 
 #to do: path append issues ...
-sys.path.append("C:\inetpub\wwwroot\\net4\pyInetPub\\DieTafel\core\src")
+sys.path.append("C:\inetpub\wwwroot\\net4\pyInetPub\DieTafel\core\src")
 
 from src.framework.core import Utils
 from src.framework.core import log
@@ -64,8 +64,8 @@ def Request():
     
     end = time.time() - start
 
-    log("JSON SENT <<%s>>]" % (str(retJSON)))
-    # log("JSON SENT <<%s ... %s chars omitted>>]" % (str(retJSON)[0:300],(len(retJSON) -300) ))
+    #log("JSON SENT <<%s>>]" % (str(retJSON)))
+    log("JSON SENT <<%s ... %s chars omitted>>]" % (str(retJSON)[0:300],(len(retJSON) -300) ))
     log(" Processing took %s seconds -------------------------------- \n \n" % (str(end)))
 
  

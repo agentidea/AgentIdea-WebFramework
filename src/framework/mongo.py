@@ -53,6 +53,8 @@ class MongoDBComponents(object):
         
         
     def find_one(self,db_id,collection_id,searchStructure):
+        """ search structure can be {'_id':ObjectID(_id) } """
+        
         connection = self.getConnection()
         db = connection[db_id]
         item = db[collection_id].find_one(searchStructure)
@@ -77,6 +79,40 @@ class MongoDBComponents(object):
                 for q in db[col].find():
                     list.append("\t DOC {0}\r\n".format(str(q))) 
 
+        return list
+    
+    def dropAllCollections(self,dbName):
+        """ drops all collections from a named db"""
+        connection = self.getConnection()
+        list = []
+        db_names  = connection.database_names()
+
+        '''enumerate db's and collections'''
+        for name in db_names:
+            
+            if dbName == name:
+                db = connection[name]
+                cols = db.collection_names()
+                for col in cols:
+                    self.dropCollection(dbName, col)
+                    list.append("in db {0} dropped collection -- {1}\r\n".format(name,col))
+        return list
+    
+    def purgeAllCollections(self,dbName):
+        """ purges all collections from a named db"""
+        connection = self.getConnection()
+        list = []
+        db_names  = connection.database_names()
+
+        '''enumerate db's and collections'''
+        for name in db_names:
+            
+            if dbName == name:
+                db = connection[name]
+                cols = db.collection_names()
+                for col in cols:
+                    self.purgeCollection(dbName, col)
+                    list.append("in db {0} purged collection -- {1}\r\n".format(name,col))
         return list
     
     

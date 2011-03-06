@@ -4,11 +4,8 @@
 import urllib
 from src.framework.core import log, Utils, Command, ReturnEnvelope
 from src.config import info
-
-
-
-
-
+from src.framework.core import Framework 
+from src.framework.strings import strings
 
 
 class cmdInitialize:
@@ -23,15 +20,54 @@ class cmdInitialize:
         setKontext.addParameter('SessionGUID', str(guid))
         command.outCommands.append(setKontext)
         
+        
+        Framework().intializeSystem(info)
+        
+        
+        
         if( info.authenticateUser == True ):
+            
+            
             s = "<div><form id='frmLogin'>"
-            s += "<input type='text' value='username' name='usr' />"
-            s += "<input type='password' value='' name='pwd' />"
-            s += "<input type='button' value='login' onclick=\" FWK.say('LocalLogin','{0}'); \" />".format(panel)
-            s += "</form></div>"
+            s += "<table cellpadding='5'><tr><td>"
+            s += "<img src='%s' />"
+            s += "</td><td>"
+            s += "<table>"
+            s += "<tr><td>"
+            s += "<DIV class='clsTextbox'>username:</DIV> </td>"            
+            s += "<td>"            
+            s += "<input type='text' value='' id='txtUsr'/>"
+            s += "</td></tr>"
+            s += "<tr><td>"
+            s += "<DIV class='clsTextbox'>password: </DIV></td>"            
+            s += "<td>"               
+            s += "<input type='password' value='' id='txtPwd' />"
+            s += "</td></tr>"
+            s += "<tr><td>&nbsp;</td><td>"
+            s += "<input type='button' value='%s' onclick=\" FWK.say('LocalLogin','%s'); \" />"
+            s += "</td></tr></table></td></tr></table></form></div>"
+            
+            
+            s = s % (info.LoginLogoURL,strings.LOGIN,panel)
+            
+            
+            beforescript = """ 
+            //JavaScript
+            displayMsg('Please enter your username and password',msgCode.info);
+            """
+            
+            afterscript = """
+            try { document.getElementById('txtUsr').focus(); } catch (expp) {} 
+            
+            """
+            
             displayCmd = Command('Display')
             displayCmd.addParameter('panel', panel)
             displayCmd.addParameter('html64', Utils().pack(s) )
+            displayCmd.beforeload_JScript = Utils().pack(beforescript)
+            displayCmd.afterload_JScript = Utils().pack(afterscript)
+            
+            
             command.outCommands.append(displayCmd)   
         else:
             """display navigation"""
@@ -46,22 +82,52 @@ class cmdAuthenticate:
         usr  = command.getValue("usr").decode('base64','strict')
         pwd =  command.getValue("pwd").decode('base64','strict')
        
-        Utils().removeFile(info.LogFile)
-        
-        s = "authetication user {0} with pwd {1} to panel {2}".format(usr,pwd,panel)
-        log("command %s - %s" % (command.name,s)) #log after the fact to make sure log file is clean looking ( not half the log event from this command
-        
+        from src.framework import mongo
+        userInDB = mongo.MongoDBComponents(info.dbIP,info.dbPort).find_one(info.dbDefault, info.userCollection, {'username': usr } )
+        s = strings.NO_SUCH_USER
+        if(userInDB):
+            #user found
+            if(userInDB['password'] == pwd):
+                #user authenticated
+                s = strings.WELCOME + " " + userInDB['username']
+                
+                """display navigation"""
+                showNavigation = Command('ShowNavigation')
+                showNavigation.addParameter('panel', panel)
+                command.outCommands.append(showNavigation)
+                
+                
+                """set session timeout value"""
+                setKontext = Command('SetKontext')
+                setKontext.addParameter('sessionTimeoutMinutes', info.sessionTimeoutMinutes)
+                command.outCommands.append(setKontext)
+                
+                
+                """set kredentials"""
+                setKreds = Command('SetKontext')
+                kredPair = "%s_%s" % ( userInDB['username'], userInDB['password'] )
+                setKreds.addParameter('kreds',Utils().pack(kredPair))
+                command.outCommands.append(setKreds)
+                
+
        
-        displayCmd = Command('Display')
-        displayCmd.addParameter('panel', panel)
-        displayCmd.addParameter('html64', Utils().pack(s) )
+        displayCmd = Command('Alert')
+        displayCmd.addParameter('msg', Utils().pack(s) )
         command.outCommands.append(displayCmd)    
     
+    
+class cmdSignout:
+    def executeCommand(self,command):
+        log("%s signed out" % (command.kontext['SessionGUID'])) 
+        
+        displayCmd = Command('Intialize')
+        displayCmd.addParameter('panel', 'farnorth')
+        command.outCommands.append(displayCmd)      
     
 class cmdRemoveRemoteLog:
     def executeCommand(self,command):
         panel = command.getValue("panel")
-       
+
         Utils().removeFile(info.LogFile)
         
         s = "removed server log file permanently"
@@ -118,6 +184,50 @@ class cmdShowAbout:
         displayCmd.addParameter('html64', Utils().pack(s) )
         command.outCommands.append(displayCmd)
 
+
+class cmdCommandsReflect:
+    
+    def executeCommand(self,command):
+        log("IN command %s" % (command.name))
+        panel = command.getValue("panel")
+        
+        s = "<div class='clsPanel'>"
+        
+        from src.framework import coreCommands
+        from src.custom import domainCommands
+        
+        s += "<div class='clsHeader'>core commands</div>"
+        s = self.listCmds(s, dir(coreCommands) ,info.commandCoreTuple)
+        s += "<div class='clsHeader'>custom commands</div>"
+        s = self.listCmds(s, dir(domainCommands),info.commandDomainTuple)
+        
+        
+        
+        s += "</div>"
+        
+        
+        displayCmd = Command('Display')
+        displayCmd.addParameter('panel', panel)
+        displayCmd.addParameter('html64', Utils().pack(s) )
+        command.outCommands.append(displayCmd)
+        
+        
+    def listCmds(self,s,lst,t):
+        
+        s += "<table border='1'>"
+        for item in lst:
+            if item.startswith(t[1]):
+                s += "<tr>"
+                s += "<td>"
+                s += item
+                s += "</td>"
+                s += "<td>set group[rwxd] user[rwxd]"
+                s += "</tr>"
+        
+        s += "</table>"
+        
+        return s
+
 class cmdShowNavigation:
     
     def executeCommand(self,command):
@@ -151,26 +261,13 @@ class cmdShowNavigation:
         s64 = s.encode('base64','strict')
         s64 = urllib.quote(s64)
 
-        script = """ //JavaScript
         
-        //ping('hello happy world');
-        /*
-        var d = document.createElement("div");
-        var t = document.createTextNode("hello");
-        d.appendChild(t);
-        
-        var attachPoint = document.getElementById("east");
-        attachPoint.appendChild(d);
-        */
-
-        """
         
         
         
         displayCmd = Command('Display')
         displayCmd.addParameter('panel', panel)
         displayCmd.addParameter('html64', s64 )
-        displayCmd.onload_JScript =  urllib.quote((script.encode('base64','strict')))
         command.outCommands.append(displayCmd)
         
         w = "{0} ver{1}.{2}.{3}".format(info.appName,info.versionMajor,info.versionMinor,info.versionRevision)

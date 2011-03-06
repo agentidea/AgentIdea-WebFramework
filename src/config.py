@@ -1,10 +1,12 @@
 """
     Framework Configuration File
 """
+from src.framework.strings import strings
+
 class info(object):
     versionMajor = 0
-    versionMinor = 4
-    versionRevision = 8
+    versionMinor = 5
+    versionRevision = 9
     version = ( versionMajor,versionMinor,versionRevision)
 
     appName = "Table"
@@ -17,8 +19,13 @@ class info(object):
     commandDomainTuple = ("src.custom.domainCommands","dc")
     
     rootTableCollectionName = "events"
+    groupCollection = "groups"
+    userCollection = "users"
+    
+    LoginLogoURL = './images/LoginLogo.jpg' 
     
     authenticateUser = True # users required to login via a login prompt 
+    sessionTimeoutMinutes = 30
     
     SHOW_ACTION = True
     HIDE_ACTION = False
@@ -35,17 +42,18 @@ class info(object):
            {'name':'New Table','A':"FWK.say('ShowNewTable','west');"},
            {'name':'Admin','A':"FWK.say('ShowEvents','west');"},
            {'name':'About','A':"FWK.say('ShowAbout','west');"},
+           {'name': strings.SIGNOUT, 'A':"FWK.say('Signout');"}
            
            ]
     
     
     #WINDOWS
-    LogPath ="C:\inetpub\wwwroot\\net4\pyInetPub\DieTafel\core\src\log"
-    PathSep = '\\'
+    #LogPath ="C:\inetpub\wwwroot\\net4\pyInetPub\DieTafel\core\src\log"
+    #PathSep = '\\'
     
     #UNIX
-    #LogPath = "/var/wsgi/tafel/log"
-    #PathSep = '/'
+    LogPath = "/var/wsgi/tafel/log"
+    PathSep = '/'
     
     Log = "pyLog.txt"
     LogFile = "{0}{1}{2}".format(LogPath,PathSep,Log)
@@ -65,3 +73,5 @@ class info(object):
     #command on load string JS as base 64
     onCommandLoad64 = "Ly9hZGQgb25Db21tYW5kTG9hZCBKYXZhU2NyaXB0IGhlcmU="
     onCommandUnload64 = "Ly9hZGQgb25Db21tYW5kVW5sb2FkIEphdmFTY3JpcHQgaGVyZQ=="
+    
+    

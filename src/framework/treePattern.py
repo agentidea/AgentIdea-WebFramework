@@ -1,5 +1,6 @@
-import mongo
-import error
+from src.framework import mongo
+from src.framework.error import *
+from src.config import info as config
       
 class Visitor(object):
     def __init__(self):
@@ -14,7 +15,7 @@ def targetMongo(dbName,collectionName,searchTerm,conf):
 
     targetNode = mongo.newMongo(conf).find_one(dbName, collectionName, searchTerm)
     if (targetNode == None):
-        raise error.MongoDocNotFoundException("No MongoDB Node found at {0}/{1}/{2}".format(dbName, collectionName, searchTerm))
+        raise MongoDocNotFoundException("No MongoDB Node found at {0}/{1}/{2}".format(dbName, collectionName, searchTerm))
     mongoHelper = MongoTreeBuilder(conf, dbName, collectionName)
     return mongoHelper, targetNode
 
@@ -43,7 +44,7 @@ class MongoTreeBuilder(object):
         for i in range(level*self.PRETTY_PRINT_SPACING):
             s = s + "    "
             
-        print "{0} <<{1}>> {2} ({3})".format(s,level,node["name"],node['_id'] )
+        #print "{0} <<{1}>> {2} ({3})".format(s,level,node["name"],node['_id'] )
         
         for childMNode in node['MNodes']:
             self.getTreeAsLevels(childMNode,totalLevels,level + 1,visitor)
@@ -64,7 +65,7 @@ class MongoTreeBuilder(object):
             if(p != None):
                 return self.obtainPathToRoot(p, visitor)
             else:
-                raise error.MongoTreeCorruptException("Node [{0}] was not found".format(searchTerm))
+                raise MongoTreeCorruptException("Node [{0}] was not found".format(searchTerm))
                 return visitor
     
     def getLeaves(self,node,level=1,visitor=None):
@@ -137,7 +138,6 @@ class MongoTreeBuilder(object):
     
     
     def getAsHTML(self,node,level=1,visitor=None):
-        import config
         
         if(visitor == None): visitor = Visitor()
         
@@ -163,7 +163,7 @@ class MongoTreeBuilder(object):
         return visitor
             
     def printMNodeTree(self,node,level=1):
-        import config
+        
         s = ""
         for i in range(level*self.PRETTY_PRINT_SPACING):
             s = s + "    "
@@ -181,7 +181,7 @@ class MongoTreeBuilder(object):
             self.printMNodeTree(childMNode,level + 1)
         
     def printtree(self,node,level=1):
-        import config
+
         s = ""
         for i in range(level*self.PRETTY_PRINT_SPACING):
             s = s + "    "

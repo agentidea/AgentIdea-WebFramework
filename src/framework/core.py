@@ -1,6 +1,8 @@
 import sys
 import os
 import error
+import hashlib
+
 from src.config import info
 
 
@@ -51,11 +53,36 @@ def log(s):
         
     return str(dt)
 
-     
-# http://code.activestate.com/recipes/576750-pretty-print-xml/   
+
+class UserHelper(object):
+    
+    """ responsible for managing users and groups """
+    def allUsers(self):
+        from src.framework import mongo
+        db = mongo.MongoDBComponents(info.dbIP,info.dbPort)
+        return db.find_all(info.dbDefault, info.userCollection)
+        
+
+
 
 class Framework(object):
     
+    def intializeSystem(self,conf):
+        """ if db is specified, setup persistent aspects, like users and groups"""
+        if info.dbIP:
+            """system uses db, self provision if need be"""
+            countUsers = int(UserHelper().allUsers().count());
+            if(countUsers == 0):
+                from src.framework import systemInit
+                """add default user and groups"""
+                systemInit.initializeUsersAndGroups()
+                log("************************************************************")
+                log("intializeSystem() -%s- users and groups " % (conf.appName))
+                log("************************************************************")
+                
+                
+                
+                
     def processItinerary(self,itinerary):
         """processes the commands in the itinerary"""
         for cmd in itinerary.inCommands:
@@ -89,6 +116,19 @@ class Framework(object):
             raise
         
         try:
+            
+            """determine if command can be run"""
+
+            log("looking up meta for command %s " % (cmd.name))
+            
+            if 'kreds' in cmd.kontext:
+                kreds = cmd.kontext['kreds']
+                clearKreds = Utils().unpack(kreds)
+                kredBits = clearKreds.split('_')
+                log(" pre execution kreds %s %s " % (kredBits[0],kredBits[1]))
+            
+            
+            
             c.executeCommand(cmd)
             log("EXECUTE {0}".format(cmd.name))
         except:
@@ -203,11 +243,16 @@ class Utils(object):
         #pprint(d)
         return ''.join(["'%s':%s\r\n" % item for item in d.iteritems()])
 
-    prettyPrint = lambda dom: '\n'.join([line for line in dom.toprettyxml(indent=' '*2).split('\n') if line.strip()])
+    prettyPrint = lambda self, dom: '\n'.join([line for line in dom.toprettyxml(indent=' '*2).split('\n') if line.strip()])
 
     def Ping(self,n):
         return n /3
      
+    def md5encode(self,plain):
+        m = hashlib.md5()
+        m.update(plain)
+        return m.hexdigest()
+    
     def getRandom(self):
         import random
         return random.random()   
@@ -320,8 +365,8 @@ class Command(object):
     def get_preScript(self):
         return self._preScript;
 
-    onload_JScript = property(get_preScript,set_preScript)
-    onblur_JScript = property(get_postScript,set_postScript)
+    beforeload_JScript = property(get_preScript,set_preScript)
+    afterload_JScript = property(get_postScript,set_postScript)
     name = property(get_name)
     params = property(get_params) 
     
@@ -358,8 +403,8 @@ class Command(object):
         
         s = s[:-1] #snip last char
         s += "],"
-        s += "'preJS64':'{0}',".format(self.onload_JScript)
-        s += "'postJS64':'{0}',".format(self.onblur_JScript)
+        s += "'preJS64':'{0}',".format(self.beforeload_JScript)
+        s += "'postJS64':'{0}',".format(self.afterload_JScript)
         s += "'UserCurrentTxID':'%s'" % ('not_set_yeti')
         s += "}"
         
@@ -381,8 +426,57 @@ class Parameter(object):
     name = property(getName)
     val = property(getValue)    
 
+
+
+class User(dict):
+    def __init__(self,_id=None,spec=None):
+        """spec is dict { 'name':'userName'|None, """
+        if(_id != None):
+            """lookup user"""
+        else:
+            """new user from spec"""
+            if(spec != None):
+                """load spec"""
+                self['username'] = spec['username']
+                self['description'] = spec['description']
+                self['password'] = spec['password']
+                self['passwordAttempts'] = 0
+                self['created'] = Utils().Timestamp()
+            else:
+                raise Exception("User constructor, needs at least one valid parameter")
+
+
+class Group(dict):
+    def __init__(self,_id=None,spec=None):
+        """spec is dict { 'name':'groupName'|None, """
+        if(_id != None):
+            """lookup group"""
+        else:
+            """new group from spec"""
+            if(spec != None):
+                """load spec"""
+                self['groupname'] = spec['groupname']
+                if('users' in spec):
+                    self['users'] = spec['users']
+                else:
+                    self['users'] = []
+                    
+                self['description'] = spec['description']
+            else:
+                raise Exception("Group constructor, needs at least one valid parameter")
+        
+    def addUser(self,_id):
+        if('users' not in self):
+            self['users'] = []
+            
+        self['users'].append( _id )
+        
+        
 class Itinerary(dict):
-    def __init__(self,kontext):
+    def __init__(self,kontext=None):
+        if( kontext==None):
+            kontext = Kontext()
+            
         self['inCommands'] = []
         self['outCommands'] = []
         self['kontext'] = kontext
@@ -411,6 +505,7 @@ class Itinerary(dict):
     outCommands = property(get_outCommands)
 
 class ReturnEnvelope(object):
+    """deprecated use itinerary instead"""
     def __init__(self):
         self.commands=[]
         self.TimeStamp = str(Utils().Timestamp())
