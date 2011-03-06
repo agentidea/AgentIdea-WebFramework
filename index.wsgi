@@ -40,13 +40,12 @@ def application(environ, start_response):
                 
                 kontext = Kontext()
                 kontext['src'] = 'index.wsgi'
+                kontext['referer'] = 'unknown'
+                
                 itinerary = Itinerary(kontext)
                 
                 post64 = environ['wsgi.input'].read(int(environ['CONTENT_LENGTH']))
                 postClear = post64.decode('base64','strict')
-                #macroDict = json.loads(postClear)
-                #cmd = fwk().ParseMacroDict(macroDict)
-                #retEnv = fwk().processCommand(cmd)
 
 				macroDict = json.loads(postClear)
    
@@ -55,7 +54,7 @@ def application(environ, start_response):
        			retEnvIT = fwk().processItinerary(itinerary)
     			output = fwk().CommandsToJSON( retEnvIT.outCommands,retEnvIT.kontext )
 				
-                #output = retEnv.toJSON()
+
                 response_headers = [('Content-type', 'text/html'),
                             ('Content-Length',str(len(output)))]
 
