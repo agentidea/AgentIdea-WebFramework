@@ -37,29 +37,32 @@ def application(environ, start_response):
             else:
             	#Proper FORM POST 
                 #retrieve the POST http://bit.ly/icvahV
-                
-           		kontext = Kontext()
-                kontext['src'] = 'index.wsgi'
-                kontext['referer'] = 'unknown'
-                
-                itinerary = Itinerary(kontext)
-                
-                post64 = environ['wsgi.input'].read(int(environ['CONTENT_LENGTH']))
-                postClear = post64.decode('base64','strict')
 
-				macroDict = json.loads(postClear)
-   
-    			cmd = fwk().ParseMacroDict(macroDict)
-    			itinerary.addInCommand(cmd)
-       			retEnvIT = fwk().processItinerary(itinerary)
-    			output = fwk().CommandsToJSON( retEnvIT.outCommands,retEnvIT.kontext )
-				
+		kontext = Kontext()
+		kontext['src'] = 'index.wsgi'
+		kontext['referer'] = 'unknown'
 
-                response_headers = [('Content-type', 'text/html'),
-                            ('Content-Length',str(len(output)))]
+		itinerary = Itinerary(kontext)
 
-                start_response(status, response_headers)
-                return [str(output)] 
+		post64 = environ['wsgi.input'].read(int(environ['CONTENT_LENGTH']))
+		postClear = post64.decode('base64','strict')
+		
+		
+		referrer = "not yet implemented in WSGI ".encode('base64')
+
+		itineraryDict = json.loads(postClear)
+		itinerary = fwk().parseItinerayDict(itineraryDict)
+		itinerary.set_KontextVal('script','index.wsgi')
+		itinerary.set_KontextVal('REFERER64',referrer)
+
+		retEnvIT = fwk().processItinerary(itinerary)
+		output = fwk().CommandsToJSON( retEnvIT.outCommands,retEnvIT.kontext )
+
+		response_headers = [('Content-type', 'text/html'),
+			('Content-Length',str(len(output)))]
+
+		start_response(status, response_headers)
+		return [str(output)] 
                
         else:
             output += "method [{0}] not supported".format(environ['REQUEST_METHOD'])
