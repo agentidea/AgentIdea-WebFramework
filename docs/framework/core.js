@@ -232,6 +232,7 @@ function processResponse(res)
      try
      { 
         resMacros = eval('(' + res + ')');
+        //resMacros = eval(res);
      }
      catch(e)
      {
