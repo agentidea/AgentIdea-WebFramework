@@ -122,6 +122,14 @@ class Framework(object):
         for param in macro['parameters']:
             cmd.addParameter(param['name'], param['value'])
         return cmd
+    
+    def parseItinerayDict(self,itinerary):
+        it = Itinerary(itinerary['kontext'])
+        for macro in itinerary['inCommands']:
+            cmd = self.ParseMacroDict(macro)
+            it.addInCommand(cmd)
+        return it
+    
 
     def CommandsToJSON(self,commandList,kontext):
         """takes a list of commands and creates JSON repreentation"""
@@ -388,6 +396,15 @@ class Itinerary(dict):
         self['outCommands'].append(command)
     def get_Kontext(self):
         return self['kontext']
+    def set_KontextVal(self,key,val):
+        """set kontext key value pair"""
+        self['kontext']['key'] = val
+    def get_KontextVal(self,key):
+        """retrieve kontext value"""
+        if(key in self['kontext']):
+            return self['kontext'][key]
+        else:
+            raise error.KeyNotFoundException("no key found for %s".format(key))
     
     kontext = property(get_Kontext)  
     inCommands = property(get_inCommands)

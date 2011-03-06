@@ -4,14 +4,37 @@
 
 */
 
+	cmdSetKontext = function(macro)
+	{
+		FWK.setKontext(macro.parameters[0].name,macro.parameters[0].value);
+	};
 
 	cmdIntialize = function(macro)
 	{
 	
 		var m = newMacro("Initialize");
+		var panel = macro.parameters[0].value;
+		addParam(m,"panel",panel);
 		processJSON(m);
 	
-	}
+	};
+	
+	cmdLocalLogin = function(macro)
+	{
+		log("local login");
+		
+		var m = newMacro("Authenticate");
+		
+		var panel = macro.parameters[0].value;
+		var usr = document.getElementById("usr").value;
+		var pwd = document.getElementById("pwd").value;
+		
+		addParam(m,"usr",TheUte().encode64(usr));
+		addParam(m,"pwd",TheUte().encode64(pwd));
+		addParam(m,"panel",panel);
+		processJSON(m);
+	
+	};
 	
 	cmdShowNavigation = function(macro)
 	{
@@ -25,6 +48,8 @@
 
 	cmdShowAbout = function(macro)
 	{
+		log("session id: " +  FWK.kontext.SessionGUID );
+		
 		ClearBottomPanels();
 		ClearMessages();
 		var panel = macro.parameters[0].value;

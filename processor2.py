@@ -20,7 +20,7 @@ from src.framework.core import Framework as fwk
 from src.framework.error import InvalidRequestMethod
 from src.framework.core import Kontext
 from src.framework.core import Itinerary
-#from src.framework.core import ReturnEnvelope
+
 
 
 
@@ -40,28 +40,22 @@ def Request():
     headers_in  = dict((N.upper(), V) for N, V in [Item.split(':',1) for Item in Env.ALL_RAW.split('\n') if Item])
     #log(Utils().ConvertDictToString(headers_in))
 
-    kontext = Kontext()
-    kontext['src'] = 'processor2.py'
-    
-    
-    if ( 'CONTENT-TYPE' in headers_in):
-        log('CONTENT-TYPE %s' % (headers_in['CONTENT-TYPE']))
+    referrer = ""
     if( 'REFERER' in headers_in ):
-        kontext['REFERER64'] = Utils().pack(headers_in['REFERER'])
+        referrer = Utils().pack(headers_in['REFERER'])
 
     
     #$to do: check was a FORM application/x-www-form-urlencoded REQUEST
     #post data is base64 encoded
     
-    itinerary = Itinerary(kontext)
     
     post64 = Read()
     postClear = post64.decode('base64','strict')
  
-    macroDict = json.loads(postClear)
-   
-    cmd = fwk().ParseMacroDict(macroDict)
-    itinerary.addInCommand(cmd)
+    itineraryDict = json.loads(postClear)
+    itinerary = fwk().parseItinerayDict(itineraryDict)
+    itinerary.set_KontextVal('script','processor2.py')
+    itinerary.set_KontextVal('REFERER64',referrer)
     
     retEnvIT = fwk().processItinerary(itinerary)
     retJSON = fwk().CommandsToJSON( retEnvIT.outCommands,retEnvIT.kontext )

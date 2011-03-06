@@ -86,6 +86,9 @@ Functional.sequence = function(/*fn...*/) {
  */
 Functional.map = function(fn, sequence, object) {
     fn = Function.toFunction(fn);
+    
+    alert(fn);
+    
     var len = sequence.length,
         result = new Array(len);
     for (var i = 0; i < len; i++)

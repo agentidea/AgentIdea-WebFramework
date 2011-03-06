@@ -15,6 +15,38 @@ class TestCoreComponents(unittest.TestCase):
         ts = Utils().Timestamp()
         print "ute.Timestamp() was {0}".format( str(ts) )
 
+    def test_commandCreation(self):
+        c = Command("testCommand")
+        c.addParameter("name","grant")
+        c.addParameter("age",43)
+       
+        
+        print c.JSON
+        
+        #print "onload JavaScript [%s][%s]" % (c.onload_JScript.decode('base64','strict'),c.onload_JScript)
+        #print "onblur JavaScript [%s][%s]" % (c.onblur_JScript.decode('base64','strict'),c.onblur_JScript)
+
+
+    def test_CallingPingContextual(self):
+        
+        from src.framework.core import Itinerary
+        
+        kontext = Kontext()
+        kontext['REFERER'] = 'From a UNIT TEST'
+        
+        c = Command("Ping")
+        c.addParameter("name","echo")
+
+        
+        it = Itinerary(kontext)
+        it.addInCommand(c)
+        it = fwk().processItinerary(it)
+        
+        retJSON = fwk().CommandsToJSON(it.outCommands,it.kontext)
+        print retJSON
+    
+    
+    
     def test_info(self):
         dict = {}
         if self.shouldPrintVerbose:
@@ -57,34 +89,7 @@ class TestCoreComponents(unittest.TestCase):
         print Utils().ConvertDictToString(d)
 
 
-    def test_commandCreation(self):
-        c = Command("testCommand")
-        c.addParameter("name","grant")
-        c.addParameter("age",43)
-       
-        
-        print c.JSON
-        
-        #print "onload JavaScript [%s][%s]" % (c.onload_JScript.decode('base64','strict'),c.onload_JScript)
-        #print "onblur JavaScript [%s][%s]" % (c.onblur_JScript.decode('base64','strict'),c.onblur_JScript)
-
-
-    def test_CallingPingContextual(self):
-        
-        kontext = Kontext()
-        kontext['REFERER'] = 'From a UNIT TEST'
-        
-        c = Command("Ping")
-        c.addParameter("name","echo")
-
-        from src.framework.core import Itinerary
-        
-        it = Itinerary(kontext)
-        it.addInCommand(c)
-        it = fwk().processItinerary(it)
-        
-        retJSON = fwk().CommandsToJSON(it.outCommands,it.kontext)
-        print retJSON
+    
         
 
     def test_mailer(self):

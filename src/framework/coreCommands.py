@@ -7,27 +7,57 @@ from src.config import info
 
 
 
+
+
+
+
 class cmdInitialize:
     def executeCommand(self,command):
         
         import uuid
         guid = uuid.uuid1()
-
+        panel = command.getValue("panel")
+        
         command.kontext['SessionGUID'] = str(guid)
+        setKontext = Command('SetKontext')
+        setKontext.addParameter('SessionGUID', str(guid))
+        command.outCommands.append(setKontext)
         
-        s = "<b>initialize command called </b>" + command.kontext['SessionGUID']
+        if( info.authenticateUser == True ):
+            s = "<div><form id='frmLogin'>"
+            s += "<input type='text' value='username' name='usr' />"
+            s += "<input type='password' value='' name='pwd' />"
+            s += "<input type='button' value='login' onclick=\" FWK.say('LocalLogin','{0}'); \" />".format(panel)
+            s += "</form></div>"
+            displayCmd = Command('Display')
+            displayCmd.addParameter('panel', panel)
+            displayCmd.addParameter('html64', Utils().pack(s) )
+            command.outCommands.append(displayCmd)   
+        else:
+            """display navigation"""
+            showNavigation = Command('ShowNavigation')
+            showNavigation.addParameter('panel', panel)
+            command.outCommands.append(showNavigation)
+
+
+class cmdAuthenticate:
+    def executeCommand(self,command):
+        panel = command.getValue("panel")
+        usr  = command.getValue("usr").decode('base64','strict')
+        pwd =  command.getValue("pwd").decode('base64','strict')
+       
+        Utils().removeFile(info.LogFile)
         
-        log("command %s - %s" % (command.name,s))
+        s = "authetication user {0} with pwd {1} to panel {2}".format(usr,pwd,panel)
+        log("command %s - %s" % (command.name,s)) #log after the fact to make sure log file is clean looking ( not half the log event from this command
         
-        
+       
         displayCmd = Command('Display')
-        displayCmd.addParameter('panel', 'west')
+        displayCmd.addParameter('panel', panel)
         displayCmd.addParameter('html64', Utils().pack(s) )
-        
-        command.outCommands.append(displayCmd)
-
-
-
+        command.outCommands.append(displayCmd)    
+    
+    
 class cmdRemoveRemoteLog:
     def executeCommand(self,command):
         panel = command.getValue("panel")
@@ -78,7 +108,8 @@ class cmdShowAbout:
         s += "<b>Information about this Application</b>"
         s += "<div class='clsAbout'>{0} ver {1}.{2}.{3}</div>".format(info.appName,info.versionMajor,info.versionMinor,info.versionRevision)
         s += "<div class='clsAbout'>db://{0}:{1} db name: {2}</div>".format(info.dbIP,info.dbPort,info.dbDefault)
-        s += "<div class='clsAbout'>logging to {0} path</div>".format(info.LogFile)
+        s += "<div class='clsAbout'>session {0} path</div>".format(command.kontext['SessionGUID'])
+        s += ""
         s += "</div>"
         
         
@@ -96,14 +127,11 @@ class cmdShowNavigation:
         
         s = "<div class='clsNavigationPanel'>"
         s += "<table class='clsGrid' border='0' cellspacing='0'>"
-        
         s += "<tr>"
-        
         s += "<td>"
         s += "<div class='clsNavigationPanel'><img src='./images/{0}' /></div>".format(info.appLogoImage)
         s += "</td>"
-        
-        
+
         nav = info.nav
         for n in nav:
             
@@ -122,16 +150,7 @@ class cmdShowNavigation:
         
         s64 = s.encode('base64','strict')
         s64 = urllib.quote(s64)
-        
-        w = "{0} ver{1}.{2}.{3}".format(info.appName,info.versionMajor,info.versionMinor,info.versionRevision)
-        
-        w64 = Utils().pack(w)
-        
-        
-        
-        
-        
-        
+
         script = """ //JavaScript
         
         //ping('hello happy world');
@@ -143,8 +162,7 @@ class cmdShowNavigation:
         var attachPoint = document.getElementById("east");
         attachPoint.appendChild(d);
         */
-        
-        
+
         """
         
         
@@ -153,13 +171,14 @@ class cmdShowNavigation:
         displayCmd.addParameter('panel', panel)
         displayCmd.addParameter('html64', s64 )
         displayCmd.onload_JScript =  urllib.quote((script.encode('base64','strict')))
+        command.outCommands.append(displayCmd)
         
+        w = "{0} ver{1}.{2}.{3}".format(info.appName,info.versionMajor,info.versionMinor,info.versionRevision)
+        w64 = Utils().pack(w)
         DisplayWindowTitle = Command('DisplayWindowTitle')
         DisplayWindowTitle.addParameter('html64', w64 )
-        
-        
         command.outCommands.append(DisplayWindowTitle)
-        command.outCommands.append(displayCmd)
+        
 
 class cmdPing:
     def executeCommand(self, command):

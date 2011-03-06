@@ -1,0 +1,12 @@
+
+
+	Framework - JavaScript Edition v3
+
+
+We ascribe this notion, that modular frameworks are useful.  Code is well organized and core plumbing is provided for basic request response, ( async model to follow )
+.  Lazy instantion of commands by name allows for a particlarly nice consitent way to call logic
+
+		FWK.say("CreatNewEntity","Acme Ink","bd#","ACME",50000000,founders['Curly',]); 
+		
+
+Python calling details are in /src/src/framework/coreFrameworkFolder.txt

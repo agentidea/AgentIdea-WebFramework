@@ -1,0 +1,20 @@
+
+
+	Framework - Python Edition v1
+
+
+We ascribe this notion, that modular frameworks are useful.  Code is well organized and core plumbing is provided for basic request response, ( async model to follow )
+.  Lazy instantion of commands by name allows for a particlarly nice consitent way to call logic
+
+		#Python example calling testCommand with two parameters
+		c = Command("testCommand")
+        c.addParameter("name","grant")
+        c.addParameter("birthday",(3,2,1967))
+        print c.JSON
+		
+		#commands are passed to a central processor to run 'testCommand'
+		
+
+JavaScript calling details are in /src/docs/framework/coreFrameworkFolder.txt
+		
+		

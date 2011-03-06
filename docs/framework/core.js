@@ -14,6 +14,15 @@ var bCallBusyLock = false;
 
 if(!FWK){
 	FWK = {
+	
+		 kontext: {},
+		 getKontext: function(key){ return this.kontext[key]; },
+		 setKontext: function(key,val){
+		 
+		 	this.kontext[key] = val;
+		 	log("setting kontext " +key + "::" + val);
+		 
+		 },
 		 say: function() {
 		 
 			 /**
@@ -299,7 +308,13 @@ function processJSON(macro)
 	    
 	    xmlHttpLocal = getXMLHTTP();
 	    
-	    var jsonString = JSON.stringify(macro);
+	    
+	    //package macro into outward bound itinerary
+	    
+	    var itinerary = new Itinerary(FWK.kontext);
+	    itinerary.inCommands.push(macro);
+	    
+	    var jsonString = JSON.stringify(itinerary);
 	   	   
 	    if (xmlHttpLocal!=null)
 	    {
@@ -638,6 +653,21 @@ function addParam( m, name, val )
     
     m.parameters.push(param);
 }
+
+function Itinerary(aKontext){
+
+	var _kontext = aKontext;
+	this.kontext = _kontext
+	
+	var _inCommands = [];
+	var _outCommands = [];
+
+	this.inCommands = _inCommands;
+	this.outCommands = _outCommands;
+
+}
+
+
 
 function macro()
 {
