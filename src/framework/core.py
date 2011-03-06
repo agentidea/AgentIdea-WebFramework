@@ -398,7 +398,7 @@ class Command(object):
         for p in self._parameterList:
             s += "{"
             s += "'name':'%s'," % (p.name)
-            s += "'value':\"%s\"" % (p.val)
+            s += "'value':'%s'" % (p.val)
             s += "},"
         
         s = s[:-1] #snip last char
