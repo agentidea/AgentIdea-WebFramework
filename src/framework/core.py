@@ -189,6 +189,9 @@ class Framework(object):
         
         if(kontext):
             for k in kontext:
+                if(k=='key'): 
+                    continue
+                
                 json += "'{0}':'{1}',".format(k, kontext[k] )
             json = json[:-1]
             
@@ -404,8 +407,8 @@ class Command(object):
         s = s[:-1] #snip last char
         s += "],"
         s += "'preJS64':'{0}',".format(self.beforeload_JScript)
-        s += "'postJS64':'{0}',".format(self.afterload_JScript)
-        s += "'UserCurrentTxID':'%s'" % ('not_set_yeti')
+        s += "'postJS64':'{0}'".format(self.afterload_JScript)
+        #s += "'UserCurrentTxID':'%s'" % ('not_set_yeti')
         s += "}"
         
         return s
