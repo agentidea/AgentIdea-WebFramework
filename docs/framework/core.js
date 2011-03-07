@@ -233,7 +233,7 @@ function processResponse(res)
      { 
         resMacros = eval('(' + res + ')');
         //resMacros = eval(res);
-         log("JSON response RECEIVED was this <<" + res + ">> ",'blue');
+        // log("JSON response RECEIVED was this <<" + res + ">> ",'blue');
      }
      catch(e)
      {
