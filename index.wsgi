@@ -39,8 +39,8 @@ def application(environ, start_response):
                 #retrieve the POST http://bit.ly/icvahV
 
 		kontext = Kontext()
-		kontext['src'] = 'index.wsgi'
-		kontext['referer'] = 'unknown'
+	        #kontext['src'] = 'index.wsgi'
+		#kontext['referer'] = 'unknown'
 
 		itinerary = Itinerary(kontext)
 
@@ -48,12 +48,12 @@ def application(environ, start_response):
 		postClear = post64.decode('base64','strict')
 		
 		
-		referrer = "not yet implemented in WSGI ".encode('base64')
+		#referrer = "not yet implemented in WSGI ".encode('base64')
 
 		itineraryDict = json.loads(postClear)
 		itinerary = fwk().parseItinerayDict(itineraryDict)
 		itinerary.set_KontextVal('script','index.wsgi')
-		itinerary.set_KontextVal('REFERER64',referrer)
+		#itinerary.set_KontextVal('REFERER64',referrer)
 
 		retEnvIT = fwk().processItinerary(itinerary)
 		output = fwk().CommandsToJSON( retEnvIT.outCommands,retEnvIT.kontext )
