@@ -233,6 +233,7 @@ function processResponse(res)
      { 
         resMacros = eval('(' + res + ')');
         //resMacros = eval(res);
+         log("JSON response RECEIVED was this <<" + res + ">> ",'blue');
      }
      catch(e)
      {
@@ -771,7 +772,6 @@ var xyRef = null;
 
 function status(msg)
 {
-
     history(msg);
 }
 

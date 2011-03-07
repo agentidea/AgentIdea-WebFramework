@@ -12,20 +12,18 @@ class cmdInitialize:
     def executeCommand(self,command):
         
         import uuid
-        guid = uuid.uuid1()
-        guid = Utils().pack(str(guid))
+        g = uuid.uuid1()
+        gs = Utils().pack(str(g))
         panel = command.getValue("panel")
         
-        command.kontext['SessionGUID'] = guid
+        log("setting SessionGUID %s" % (gs))
+        command.kontext['SessionGUID'] = gs
         setKontext = Command('SetKontext')
-        setKontext.addParameter('SessionGUID', guid)
+        setKontext.addParameter('SessionGUID', gs)
         command.outCommands.append(setKontext)
-        
-        
+
         Framework().intializeSystem(info)
-        
-        
-        
+
         if( info.authenticateUser == True ):
             
             
