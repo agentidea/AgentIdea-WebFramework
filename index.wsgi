@@ -39,7 +39,7 @@ def application(environ, start_response):
                 #retrieve the POST http://bit.ly/icvahV
 
 		kontext = Kontext()
-	        #kontext['src'] = 'index.wsgi'
+	    #kontext['src'] = 'index.wsgi'
 		#kontext['referer'] = 'unknown'
 
 		itinerary = Itinerary(kontext)
