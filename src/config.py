@@ -25,7 +25,7 @@ class info(object):
     LoginLogoURL = './images/LoginLogo.jpg' 
     
     authenticateUser = True # users required to login via a login prompt 
-    sessionTimeoutMinutes = 30
+    sessionTimeoutMinutes = 2
     
     SHOW_ACTION = True
     HIDE_ACTION = False
@@ -40,12 +40,33 @@ class info(object):
     nav = [
            
            {'name':'New Table','A':"FWK.say('ShowNewTable','west');"},
-           {'name':'Admin','A':"FWK.say('ShowEvents','west');"},
-           {'name':'About','A':"FWK.say('ShowAbout','west');"},
+           {'name':'Tables','A':"FWK.say('ShowEvents','west');"},
+           {'name':'Admin','A':"FWK.say('ShowToc','admin','farwest','vertical');"},
+           {'name':'help','A':"FWK.say('ShowToc','help','farwest','vertical');"},
+           
            {'name': strings.SIGNOUT, 'A':"FWK.say('Signout');"}
            
            ]
-    
+    vertNav = {
+            
+            'help': [
+                {'name':'about','A':"FWK.say('ShowAbout','center');"},
+                {'name':'support','A':"FWK.say('ShowSupport','center');"},
+                {'name':'console','A':"FWK.say('ShowConsole','center');"}
+            
+            ],
+            'admin': [
+                {'name':'commands','A':"FWK.say('ShowAdmin','center');"},
+                {'name':'pwd reset','A':"FWK.say('ShowPwdReset','center');"}
+            ]
+            
+            }
+
+    supportContacts = [
+                       {'name':'Grant Steinfeld','email':'GrantSteinfeld@gmail.com'},
+                       #{'name':'','email':'pmcnamee@smartorg.com'}
+                       ]
+
     
     #WINDOWS
     #LogPath ="C:\inetpub\wwwroot\\net4\pyInetPub\DieTafel\core\src\log"
