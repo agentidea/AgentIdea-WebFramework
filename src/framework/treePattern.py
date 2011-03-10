@@ -144,9 +144,10 @@ class MongoTreeBuilder(object):
         s = "\r\n <br/>"
         for i in range(level*self.PRETTY_PRINT_SPACING):
             s = s + "    "
-         
+        
+        #$to do: remove panel position hard coding
         visitor.HTML = "{0}{1}{2}".format(visitor.HTML,s,node['name'])
-        visitor.HTML = "{0} <span class='clsHyperlink' onclick=\"displayInputScreen('{1}','{2}','north','{3}');\">+</span>".format(visitor.HTML,node['name'],node['_id'],config.rootProjectCollectionName)
+        visitor.HTML = "{0} <span class='clsPlusMinus' onclick=\"FWK.say('DisplayInputScreen','{1}','{2}','center','{3}');\">+</span>".format(visitor.HTML,node['name'],node['_id'],config.rootProjectCollectionName)
         
         if node['MNodes'] != None and len(node['MNodes']) > 0:
             for childMNode in node['MNodes']:

@@ -15,7 +15,7 @@ class MongoUnitTests(unittest.TestCase):
     def setUp(self):
         self.shouldPrintVerbose = True
         self.shouldPurgeAll = False
-        self.shouldDropAll = True
+        self.shouldDropAll = False
         
     
 #    def test_MongoDB_write(self):

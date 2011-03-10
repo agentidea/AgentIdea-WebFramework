@@ -38,79 +38,92 @@
 		 <tr>
 		 	<td>
 
-	<!-- simple compass layout SNEW -->
-    <table border="0">
-    	<tr>
-    		<td><DIV id="farnorth"></DIV></td>
 
-    	</tr>
-    	<tr>
-			<td>
-    <DIV id="dvMessage" class="clsMsg" ></DIV>
+	<table border='0'>
+		<tr>
+			<td colspan='3'>
+				<DIV id='farnorth'></DIV>
+			</td>
+		</tr>
+		<tr>
+			<td  colspan='3'>
+    			<DIV id="dvMessage" class="clsMsg" ></DIV>
 		     </td>
 		 </tr>
-
-    	<tr>
-    		<td><DIV id="west"></DIV></td>
-    		<td>
-    			<table>
-    				<tr>
-    					<td>
-    						<DIV id="north"></DIV>
-    					</td>
-    				</tr>
-    				<tr>
-    					<td>
-    						<DIV id="south"></DIV>
-    					</td>
-    				</tr>
-    		<td><DIV id="east"></DIV></td>
-    	</tr>
-	</table>
-
-			</td>
-		</tr>
-
+		
 		<tr>
+			<td valign='top'>
+				<DIV id='farwest'></DIV>
+			</td>
+			<td  valign='top'>
+				<DIV id='farcenter'>
+				
+					<table border='0'>
+						<tr>
+							<td colspan='3'>
+								<DIV id='north'></DIV>
+							</td>
+						</tr>
+					<tr>
+						<td>
+							<DIV id='west'></DIV>
+						</td>
+						<td>
+							<DIV id='center'></DIV>
+						</td>
+						<td>
+							<DIV id='east'></DIV>
+						</td>
+					</tr>
+					<tr>
+						<td colspan='3'>
+							<DIV id='south'></DIV>
+						</td>
+					</tr>
+				
+				</table>
+				
+				
+				
+				
+				</DIV>
+			</td>
 			<td>
-
-
-
-
-	<DIV id="footer" class="clsFooter"> <br/><br/><input class="clsButtonLight" type="button" onclick="toggleLog(this);" value='show debug'/>
-													<input class="clsButtonLight" type="button" onclick="clearLocalLog();" value='clear local log' /></DIV>
-
-
+				<DIV id='fareast'></DIV>
 			</td>
 		</tr>
-
-
-
-	</table>
-    <table>
-
-    	<tr>
-			<td><DIV id="farsouth"></DIV></td><td><DIV id="farsoutheast"></DIV></td>
+		<tr>
+			<td colspan='3'>
+				<DIV id='farsouth'></DIV>
+				<DIV id='farsoutheast'></DIV>
+			</td>
 		</tr>
+				
+	</table>
+	
+	
+	</table>
 
-    <tr>
-    
-    
-			<td>
+
+
+
+	<DIV id="footer" class="clsFooter"> 
+	<br/><br/><input class="clsButtonLight" type="button" onclick="toggleLog(this);" value='toggle debug'/>
+	</DIV>
+
+
 			
-	<DIV id="divLogWindow" class="clsLog" style='display:block;'>	
-	<table border="1"><tr><td><input type='button' value='show server log' class="clsButtonLight" onclick="FWK.say('DisplayLog','farsoutheast',50);" /></td></tr>
-	<tr><td>
+	<DIV id="divLogWindow" class="clsLog" style='display:none;'>	
+	<table border="1"><tr>
+	<td>&nbsp;</td>
+	<td><input class="clsButtonLight" type="button" onclick="clearLocalLog();" value='clear local log' /></td>
+	<td><input type='button' value='show server log' class="clsButtonLight" onclick="FWK.say('DisplayLog','farsoutheast',50);" /></td></tr>
+	<tr><td colspan='3'>
 		<DIV id="divLog" class="clsLog" style='display:block;'></DIV>
 	</tr></td>
 	</table>
 	</DIV>	
-	
-	
-	
-			</td>
-		</tr>
-	</table>
+
 	</center>
 </BODY>
 

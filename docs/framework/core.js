@@ -14,12 +14,34 @@ var SYNC = false;
 
 if(!FWK){
 	FWK = {
+		 
 		 kontext: {},
 		 getKontext: function(key){ return this.kontext[key]; },
 		 setKontext: function(key,val){
 		 
 		 	this.kontext[key] = val;
 		 	log("setting kontext " +key + "::" + val);
+		 
+		 },
+		 pressNav: function(pattern,dv,clsUnpressed) {
+		 
+		 	//reset all buttons to original 
+		    var counter = 0;
+		    while(true){
+		    
+		    	counter += 1;
+		    	var otherButtonTmp = document.getElementById(pattern + "" + counter);
+		    	if(otherButtonTmp == null) {
+		    		break;
+		    	} else {
+		    		otherButtonTmp.className = clsUnpressed;
+		    	}
+		    
+		    }
+		    
+		    dv.className = clsUnpressed + 'Pressed';
+		    
+		 
 		 
 		 },
 		 say: function() {
@@ -155,13 +177,13 @@ function displayMsg(s,severity)
 		if(logDiv.style.display == "none")
 		{
 			logDiv.style.display = "block";
-			o.value = "hide debug";
+			//o.value = "hide debug";
 			log("logging on");
 		}
 		else
 		{
 			logDiv.style.display = "none";
-			o.value = "show debug";
+			//o.value = "show debug";
 			log("logging off");
 		}
 			
@@ -189,6 +211,7 @@ function displayMsg(s,severity)
 		WriteToPanel('south','');
 		WriteToPanel('east','');
 		WriteToPanel('west','');
+		WriteToPanel('center','');
 	
 	};
 	

@@ -163,7 +163,126 @@ class cmdShowRemoteLog:
         displayCmd.addParameter('panel', panel)
         displayCmd.addParameter('html64', Utils().pack(s) )
         command.outCommands.append(displayCmd)        
-  
+
+
+
+class cmdShowSupport:
+    def executeCommand(self,command):
+
+        
+        log("IN command %s" % (command.name))
+        panel = command.getValue("panel")
+        
+        s = "<div class='clsPageHeader'>{0}</div>".format(strings.SUPPORT_HEADER)
+        supportPeople = info.supportContacts
+        for supp in supportPeople:
+            s += "<div>"
+            s += "<a href='mailto:{0}'>{1}</a>".format(supp['email'],supp['name'])
+            s += "</div>"
+        
+        displayCmd = Command('Display')
+        displayCmd.addParameter('panel', panel)
+        displayCmd.addParameter('html64', Utils().pack(s) )
+        command.outCommands.append(displayCmd)
+
+class cmdShowHelp:
+    def executeCommand(self,command):
+
+        
+        log("IN command %s" % (command.name))
+        panel = command.getValue("panel")
+        s = "<div class='clsPageHeader'>{0}</div>".format(strings.HELP_HEADER)
+        s += "<div>"
+        s += "<input type='text' class='clsCommandLineInactive' value=''  title='type command here' id='txtCommandLine' />"
+        s += "<input type='button' value='exec' id='cmdProcessCommand' onclick=\"FWK.say('ProcCommandLine','txtCommandLine');\" />"
+        s += "</div>"
+        
+        displayCmd = Command('Display')
+        displayCmd.addParameter('panel', panel)
+        displayCmd.addParameter('html64', Utils().pack(s) )
+        command.outCommands.append(displayCmd)
+
+class cmdPasswd:
+    """change password for a user"""
+    def executeCommand(self,command):
+
+        username = command.getValue("username")
+        oldpassword= command.getValue("oldPassword")
+        newpassword = command.getValue("newPassword")
+        newpasswordConfirm = command.getValue("newPasswordConfirm")
+        log("IN command %s" % (command.name))
+        
+        from src.framework.core import UserHelper
+        
+        s = UserHelper().passwd(username, oldpassword, newpassword, newpasswordConfirm)
+       
+        replyCmd = Command('Alert')
+        replyCmd.addParameter('msg', Utils().pack(s) )
+        command.outCommands.append(replyCmd)
+
+class cmdShowPwdReset:
+    def executeCommand(self,command):
+
+        
+        log("IN command %s" % (command.name))
+        
+        kredbits = Utils().unpack( command.kontext['kreds']).split('_')
+        username = kredbits[0]
+        
+        panel = command.getValue("panel")
+        s = "<div class='clsPageHeader'>{0}</div>".format(strings.PWDRESET_HEADER)
+        s += "<div>"
+        s += "<table>"
+        
+        s += "<tr><td>"
+        s += "user:</td><td>"
+        s += "<input type='text' class='clsTextbox' value='{0}'  title='user' id='txtUsername' />".format( username )
+        s += "</td></tr>"
+        
+        s += "<tr><td>"
+        s += "old password:</td><td>"
+        s += "<input type='password' class='clsTextbox' value=''  title='old password' id='txtPwdOld' />"
+        s += "</td></tr>"
+        
+        s += "<tr><td>"
+        s += "new password:</td><td>"
+        s += "<input type='password' class='clsTextbox' value=''  title='new password' id='txtPwdNew' />"
+        s += "</td></tr>"
+        
+        s += "<tr><td>confirm password:</td><td>"
+        s += "<input type='password' class='clsTextbox' value=''  title='confirm new password' id='txtPwdConfirm' />"
+        s += "</td></tr>"
+        
+        s += "<tr><td>"
+        s += "<input type='button' value='save' id='cmdProcessCommand' onclick=\"FWK.say('Passwd','txtUsername','txtPwdOld','txtPwdNew','txtPwdConfirm');\" />"
+        s += "</td></tr>"
+        
+        s += "</table>"
+        s += "</div>"
+        
+        displayCmd = Command('Display')
+        displayCmd.addParameter('panel', panel)
+        displayCmd.addParameter('html64', Utils().pack(s) )
+        command.outCommands.append(displayCmd)
+        
+class cmdShowCommandLine:
+    def executeCommand(self,command):
+
+        
+        log("IN command %s" % (command.name))
+        panel = command.getValue("panel")
+        s = "<div class='clsPageHeader'>{0}</div>".format(strings.COMMANDLINE_HEADER)
+        
+        s += "<div>"
+        s += "<input type='text' class='clsCommandLineInactive' value=''  title='type command here' id='txtCommandLine' />"
+        s += "<input class='clsActionButton' type='button' value='execute' id='cmdProcessCommand' onclick=\"FWK.say('ProcCommandLine','txtCommandLine');\" />"
+        s += "</div>"
+        
+        displayCmd = Command('Display')
+        displayCmd.addParameter('panel', panel)
+        displayCmd.addParameter('html64', Utils().pack(s) )
+        command.outCommands.append(displayCmd)
+         
 class cmdShowAbout:
     
     def executeCommand(self,command):
@@ -176,8 +295,7 @@ class cmdShowAbout:
         s += "<div class='clsAbout'>session {0} path</div>".format(command.kontext['SessionGUID'])
         s += ""
         s += "</div>"
-        
-        
+
         displayCmd = Command('Display')
         displayCmd.addParameter('panel', panel)
         displayCmd.addParameter('html64', Utils().pack(s) )
@@ -227,6 +345,63 @@ class cmdCommandsReflect:
         
         return s
 
+
+class cmdShowToc:
+    
+    def executeCommand(self,command):
+        log("IN command %s" % (command.name))
+        
+        what = command.getValue("what")
+        panel = command.getValue("panel")
+        orient = command.getValue("orientation")
+        
+        
+        
+        s = "<div class='clsToc'>"
+        s += "<table class='clsGrid' border='1' cellspacing='0'>"
+        
+        
+        
+        if orient == 'horizontal':
+            s += "<tr>"
+
+        nav = info.vertNav[what]
+        counter = 0
+        
+        for n in nav:
+            counter += 1
+            if orient == 'vertical':
+                s += "</tr>"
+                
+            s += "<td valign='bottom'>"
+            s += "<div class='clsVertNavItem' id='dvToc_{0}'".format(str(counter))
+            s += " onclick=\"FWK.pressNav('dvToc_',this,'clsVertNavItem'); {0}\" >".format(n['A'])
+            s += n['name']
+            s += "</div>"
+            s += "</td>"
+            
+            if orient == 'vertical':
+                s += "</tr>"
+        
+        if orient == 'horizontal':
+            s += "</tr>"
+        
+        s += "</table>"
+        s += "</div>"
+        
+        s64 = s.encode('base64','strict')
+        s64 = urllib.quote(s64)
+
+        displayCmd = Command('Display')
+        displayCmd.addParameter('panel', panel)
+        displayCmd.addParameter('html64', s64 )
+        command.outCommands.append(displayCmd)
+        
+        
+
+
+
+
 class cmdShowNavigation:
     
     def executeCommand(self,command):
@@ -242,11 +417,12 @@ class cmdShowNavigation:
         s += "</td>"
 
         nav = info.nav
+        counter = 0
         for n in nav:
-            
+            counter += 1
             s += "<td class='clsNavElement' valign='bottom'>"
-            s += "<div class='clsHyperlink' "
-            s += ' onclick="{0}" >'.format(n['A'])
+            s += "<div id='dvNav_{0}' class='clsHyperlink' ".format(str(counter))
+            s += " onclick=\"FWK.pressNav('dvNav_',this,'clsHyperlink'); {0}\" >".format(n['A'])
             s += n['name']
             s += "</div>"
             s += "</td>"

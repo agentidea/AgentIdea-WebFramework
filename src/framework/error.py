@@ -54,10 +54,21 @@ class KeyNotFoundException(Exception):
         self.value = value
     def __str__(self):
         return repr(self.value)      
-    
 class WebserviceException(Exception):
     def __init__(self,value):
         self.value = value
     def __str__(self):
         return repr(self.value)     
+        
+class NewPasswordMismatchException(Exception):
+    def __init__(self,value):
+        self.value = value
+    def __str__(self):
+        return repr(self.value)     
+    
+class OldPasswordMismatchException(Exception):
+    def __init__(self,value):
+        self.value = value
+    def __str__(self):
+        return repr(self.value)         
     

@@ -4,7 +4,8 @@ import error
 import hashlib
 
 from src.config import info
-
+from src.framework import mongo
+from src.framework.error import *
 
 def log(s):
 
@@ -55,41 +56,59 @@ def log(s):
 
 
 class UserHelper(object):
-    
     """ responsible for managing users and groups """
     def allUsers(self):
-        from src.framework import mongo
+        """retrieve all users"""
+        
         db = mongo.MongoDBComponents(info.dbIP,info.dbPort)
         return db.find_all(info.dbDefault, info.userCollection)
         
-
+    def passwd(self,username,oldpassword,newpassword,newpasswordConfirm):
+       
+        if(newpassword != newpasswordConfirm):
+            raise NewPasswordMismatchException("passwords did not match")
+        
+        usr = mongo.MongoDBComponents(info.dbIP,info.dbPort).find_one(info.dbDefault, info.userCollection, {'username': username } )
+        
+        if(oldpassword != usr['password']):
+            raise OldPasswordMismatchException("old password was incorrect")
+        
+        
+        usr['password'] = newpassword
+        mongo.newMongo(info).save(info.dbDefault,info.userCollection, usr)
+        
+        return "password changed"
+        
+      
 
 
 class Framework(object):
     
     def intializeSystem(self,conf):
-        """ if db is specified, setup persistent aspects, like users and groups"""
+        """ if db is specified, and has no users ( + other cirteria? )
+        intializeSystem adds persistent aspects, like users and groups"""
+        
         if info.dbIP:
-            """system uses db, self provision if need be"""
+            #system uses db, self provision if need be
             countUsers = int(UserHelper().allUsers().count());
             if(countUsers == 0):
                 from src.framework import systemInit
-                """add default user and groups"""
+                #add default user and groups
                 systemInit.initializeUsersAndGroups()
+                
                 log("************************************************************")
                 log("intializeSystem() -%s- users and groups " % (conf.appName))
                 log("************************************************************")
                 
                 
-                
-                
-    def processItinerary(self,itinerary):
+               
+    def processItinerary(self,itinerary,commandTuple = None):
         """processes the commands in the itinerary"""
         for cmd in itinerary.inCommands:
-            self.processCommand( cmd.set_itinerary(itinerary) )
+            self.__processCommand( cmd.set_itinerary(itinerary), commandTuple )
         return itinerary
     
-    def processCommand(self,cmd,commandCoreTuple = None):
+    def __processCommand(self,cmd,commandCoreTuple = None):
         """ processess a Command dynamically """
         moduleID = None
         klassID = None

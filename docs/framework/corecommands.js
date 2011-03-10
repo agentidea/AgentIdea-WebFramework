@@ -24,15 +24,50 @@
 	
 		ClearBottomPanels();
 		ClearMessages();
+		WriteToPanel('farwest','');
 		
 		var m = newMacro("Signout");
 		processJSON(m);
 		
 		
-		
-		
-	
 	};
+	
+	
+		
+	cmdProcCommandLine = function(macro)
+	{
+		var TxtID = macro.parameters[0].value;
+		
+		var txtBox = document.getElementById(TxtID);
+		
+		if(txtBox != null){
+			if(txtBox.value.trim().length > 0) {
+				log("ECHO " + txtBox.value);
+				
+				//parse line into command
+				
+				// line = command + param1 + param2 ... paramN
+				// command = word
+				// param = word | quoted phrase
+				// word = a-z |0-9
+				// quoted phrase = quote + word + quote
+				// quote = " | ' 
+				
+				
+			}
+			else
+			{
+				txtBox.value = "listusers *";
+			}
+			
+			txtBox.focus();
+			
+		
+		}
+		
+	};
+	
+	
 	cmdLocalLogin = function(macro)
 	{
 		
@@ -86,11 +121,104 @@
 	};
 	
 	
+	cmdShowHelp = function(macro)
+	{
+		ClearBottomPanels();
+		ClearMessages();
+		var panel = macro.parameters[0].value;
+		var m = newMacro("ShowHelp");
+		addParam(m,"panel",panel);
+		processJSON(m);
+
+	};
+    cmdShowSupport = function(macro)
+	{
+		ClearBottomPanels();
+		ClearMessages();
+		var panel = macro.parameters[0].value;
+		var m = newMacro("ShowSupport");
+		addParam(m,"panel",panel);
+		processJSON(m);
+
+	};	
 	cmdShowAdmin = function(macro)
 	{
+		//ClearBottomPanels();
+		ClearMessages();
 		var m = newMacro("CommandsReflect");
 		var panel = macro.parameters[0].value;
 		addParam(m,"panel",panel);
+		processJSON(m);
+	
+	
+	};
+	
+	cmdPasswd = function(macro)
+	{
+		
+		var txtUsername = macro.parameters[0].value;
+		var txtPwdOld = macro.parameters[1].value;
+		var txtPwdNew = macro.parameters[2].value;
+		var txtPwdConfirm = macro.parameters[3].value;
+		
+		//retrieve text box values
+		username = document.getElementById(txtUsername).value;
+        oldpassword= hex_md5(document.getElementById(txtPwdOld).value);
+        newpassword = hex_md5(document.getElementById(txtPwdNew).value);
+        newpasswordConfirm = hex_md5(document.getElementById(txtPwdConfirm).value);
+        
+        if(newpassword == newpasswordConfirm) {
+
+			var m= newMacro("Passwd");
+			addParam(m,"username",username);
+			addParam(m,"oldPassword",oldpassword);
+			addParam(m,"newPassword",newpassword);
+			addParam(m,"newPasswordConfirm",newpasswordConfirm);
+			processJSON(m);
+		}
+		else
+		{
+			displayMsg("passwords did not match",msgCode.warn);
+		}
+	
+	};
+	
+	
+	cmdShowPwdReset = function(macro)
+	{
+		ClearBottomPanels();
+		ClearMessages();
+		var m = newMacro("ShowPwdReset");
+		var panel = macro.parameters[0].value;
+		addParam(m,"panel",panel);
+		processJSON(m);
+	
+	
+	};
+	
+	cmdShowConsole = function(macro)
+	{
+		ClearBottomPanels();
+		ClearMessages();
+		var m = newMacro("ShowCommandLine");
+		var panel = macro.parameters[0].value;
+		addParam(m,"panel",panel);
+		processJSON(m);
+	
+	
+	};
+	
+	cmdShowToc = function(macro)
+	{
+		ClearBottomPanels();
+		ClearMessages();
+		var m = newMacro("ShowToc");
+		var what = macro.parameters[0].value;
+		var panel = macro.parameters[1].value;
+		var orientation = macro.parameters[2].value;
+		addParam(m,"what",what);
+		addParam(m,"panel",panel);
+		addParam(m,"orientation",orientation);
 		processJSON(m);
 	
 	
@@ -100,7 +228,7 @@
 	{
 		//log("session id: " +  FWK.kontext.SessionGUID );
 		
-		ClearBottomPanels();
+		//ClearBottomPanels();
 		ClearMessages();
 		var panel = macro.parameters[0].value;
 		var m = newMacro("ShowAbout");
@@ -115,7 +243,7 @@ function cmdAlertAndRefresh(macro)
 
 }
 
-function cmdAlert(macro)
+ cmdAlert = function(macro)
 {
    var msg64 = getParameterVal("msg",macro);
    var msg = TheUte().URLDecode(msg64);
