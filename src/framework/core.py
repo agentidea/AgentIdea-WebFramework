@@ -464,6 +464,7 @@ class User(dict):
                 self['password'] = spec['password']
                 self['passwordAttempts'] = 0
                 self['created'] = Utils().Timestamp()
+                self['locked'] = False
             else:
                 raise Exception("User constructor, needs at least one valid parameter")
 

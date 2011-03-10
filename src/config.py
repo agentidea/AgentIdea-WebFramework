@@ -26,6 +26,7 @@ class info(object):
     
     authenticateUser = True # users required to login via a login prompt 
     sessionTimeoutMinutes = 2
+    passwordAttempts = 6
     
     SHOW_ACTION = True
     HIDE_ACTION = False
@@ -39,7 +40,7 @@ class info(object):
     appLogoImage = "cropped.jpg"
     nav = [
            
-           {'name':'New Table','A':"FWK.say('ShowNewTable','west');"},
+           {'name':'New','A':"FWK.say('ShowNewTable','west');"},
            {'name':'Tables','A':"FWK.say('ShowEvents','west');"},
            {'name':'Admin','A':"FWK.say('ShowToc','admin','farwest','vertical');"},
            {'name':'help','A':"FWK.say('ShowToc','help','farwest','vertical');"},
@@ -64,7 +65,7 @@ class info(object):
 
     supportContacts = [
                        {'name':'Grant Steinfeld','email':'GrantSteinfeld@gmail.com'},
-                       #{'name':'','email':'pmcnamee@smartorg.com'}
+                       #{'name':'Oren Kredo','email':'Oren.Kredo@gmail.com'}
                        ]
 
     

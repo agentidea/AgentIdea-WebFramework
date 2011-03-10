@@ -14,7 +14,7 @@ class MongoUnitTests(unittest.TestCase):
 
     def setUp(self):
         self.shouldPrintVerbose = True
-        self.shouldPurgeAll = False
+        self.shouldPurgeAll = True
         self.shouldDropAll = False
         
     

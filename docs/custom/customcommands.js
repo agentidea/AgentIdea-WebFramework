@@ -9,6 +9,7 @@ cmdShowEvents = function(macro)	{
 	
 	ClearBottomPanels();
 	ClearMessages();
+	WriteToPanel('farwest','');
 	
 	var m = newMacro("ShowEvents");
 	addParam(m,"panel",panel);
@@ -22,6 +23,7 @@ cmdShowNewTable = function(macro){
 	  var oPanel = document.getElementById(panel);
 	  if(oPanel != null){
 	    ClearBottomPanels();
+	    WriteToPanel('farwest','');
 	    APP.tafelCreateForm(oPanel);
 	  }
 	  else{

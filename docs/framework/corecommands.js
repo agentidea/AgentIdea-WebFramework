@@ -163,17 +163,23 @@
 		
 		//retrieve text box values
 		username = document.getElementById(txtUsername).value;
-        oldpassword= hex_md5(document.getElementById(txtPwdOld).value);
-        newpassword = hex_md5(document.getElementById(txtPwdNew).value);
-        newpasswordConfirm = hex_md5(document.getElementById(txtPwdConfirm).value);
+        oldpassword= document.getElementById(txtPwdOld).value;
+        newpassword = document.getElementById(txtPwdNew).value;
+        newpasswordConfirm = document.getElementById(txtPwdConfirm).value;
         
-        if(newpassword == newpasswordConfirm) {
+        
+        if(username.trim().length == 0) { displayMsg("Username may not be blank",msgCode.warn); return;}
+        if(oldpassword.trim().length == 0) { displayMsg("Old Password may not be blank",msgCode.warn);  return;}
+        if(newpassword.trim().length == 0) { displayMsg("New Password may not be blank",msgCode.warn);  return;}
+        if(newpasswordConfirm.trim().length == 0) { displayMsg("New Password Confirm may not be blank",msgCode.warn);  return;}
+        
+        if(newpassword.trim() == newpasswordConfirm.trim() ) {
 
 			var m= newMacro("Passwd");
 			addParam(m,"username",username);
-			addParam(m,"oldPassword",oldpassword);
-			addParam(m,"newPassword",newpassword);
-			addParam(m,"newPasswordConfirm",newpasswordConfirm);
+			addParam(m,"oldPassword",hex_md5(oldpassword));
+			addParam(m,"newPassword",hex_md5(newpassword));
+			addParam(m,"newPasswordConfirm",hex_md5(newpasswordConfirm));
 			processJSON(m);
 		}
 		else

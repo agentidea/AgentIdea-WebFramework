@@ -86,28 +86,50 @@ class cmdAuthenticate:
         s = strings.NO_SUCH_USER
         if(userInDB):
             #user found
-            if(userInDB['password'] == pwd):
+            
+            if userInDB['locked']:
+                s = strings.ACCOUNT_LOCKED
+            elif(userInDB['password'] == pwd):
                 #user authenticated
+                
+                #?reset pwd attempts
+                pwdAttempts = int(userInDB['passwordAttempts'])
+                if(pwdAttempts > 0):
+                    userInDB['passwordAttempts'] = 0
+                    mongo.newMongo(info).save(info.dbDefault,info.userCollection, userInDB)
+                    
                 s = strings.WELCOME + " " + userInDB['username']
                 
                 """display navigation"""
                 showNavigation = Command('ShowNavigation')
                 showNavigation.addParameter('panel', panel)
                 command.outCommands.append(showNavigation)
-                
-                
+
                 """set session timeout value"""
                 setKontext = Command('SetKontext')
                 setKontext.addParameter('sessionTimeoutMinutes', info.sessionTimeoutMinutes)
                 command.outCommands.append(setKontext)
-                
-                
+
                 """set kredentials"""
                 setKreds = Command('SetKontext')
                 kredPair = "%s_%s" % ( userInDB['username'], userInDB['password'] )
                 setKreds.addParameter('kreds',Utils().pack(kredPair))
                 command.outCommands.append(setKreds)
                 
+            else:
+                #bad passowrd
+                pwdAttempts = int(userInDB['passwordAttempts'])
+                if(pwdAttempts >= info.passwordAttempts):
+                    userInDB['locked'] = True
+                    s = strings.ACCOUNT_LOCKED
+                    log("ACCOUNT LOCKED {0} password attempted > {1} times".format(usr,pwdAttempts))
+                else:
+                    userInDB['passwordAttempts'] = pwdAttempts + 1
+                    s = strings.WRONG_PASSWORD % (str( info.passwordAttempts - pwdAttempts))
+                    log("BAD PASSWORD {0} password attempted > {1} times".format(usr,pwdAttempts))
+                    
+                #save bad password update
+                mongo.newMongo(info).save(info.dbDefault,info.userCollection, userInDB)   
 
        
         displayCmd = Command('Alert')
