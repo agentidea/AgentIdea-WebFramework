@@ -25,12 +25,7 @@ class TestCoreComponents(unittest.TestCase):
         log("this is a test of the core logging system")
         print "testing log {0}".format(info.LogFile)
     
-    def test_badLogPath(self):
-        origLogPath = info.LogPath 
-        #$to do: illustrates why log path should be a immutable tuple()
-        info.LogPath = """z:\yellowBrickRoad"""
-        self.assertRaises(Exception,log,"where is the wicked witch of the east?")
-        info.LogPath = origLogPath
+  
          
     def test_info2(self):
         dict = {'king':77}
@@ -62,17 +57,13 @@ class TestCoreComponents(unittest.TestCase):
         c = Command("testCommand")
         c.addParameter("name","grant")
         c.addParameter("age",43)
-       
-        
         print c.JSON
         
-        #print "onload JavaScript [%s][%s]" % (c.onload_JScript.decode('base64','strict'),c.onload_JScript)
-        #print "onblur JavaScript [%s][%s]" % (c.onblur_JScript.decode('base64','strict'),c.onblur_JScript)
-
+    
 
 
     def test_CallingPing(self):
-        name = "babu"
+        name = "bunny"
         c = Command("Ping")
         c.addParameter("name",name)
        
@@ -94,9 +85,8 @@ class TestCoreComponents(unittest.TestCase):
         
         c = Command("Ping")
         c.addParameter("name","echo")
+        c.addParameter("age",44)
 
-        
-        
         it = Itinerary(kontext)
         it.addInCommand(c)
         it = fwk().processItinerary(it)

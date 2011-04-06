@@ -8,14 +8,46 @@ class MongoTreeCorruptException(Exception):
     def __init__(self,value):
         self.value = value
     def __str__(self):
-        return repr(self.value)    
-    
+        return repr(self.value)   
+ 
+class WrongNumberParametersException(Exception):
+    def __init__(self,value):
+        self.value = value
+    def __str__(self):
+        return repr(self.value)
+
+class InvalidParameterTypeException(Exception):
+    def __init__(self,value):
+        self.value = value
+    def __str__(self):
+        return repr(self.value)
+
+class InvalidCommandSpecificationException(Exception):
+    def __init__(self,value):
+        self.value = value
+    def __str__(self):
+        return repr(self.value)
+
+class UnexpectedParameterException(Exception):
+    def __init__(self,value):
+        self.value = value
+    def __str__(self):
+        return repr(self.value)       
+class MissingCommandSpecificationException(Exception):
+    def __init__(self,value):
+        self.value = value
+    def __str__(self):
+        return repr(self.value)         
 class MissingParameterException(Exception):
     def __init__(self,value):
         self.value = value
     def __str__(self):
         return repr(self.value)       
-    
+class RequiredParameterMissingException(Exception):
+    def __init__(self,value):
+        self.value = value
+    def __str__(self):
+        return repr(self.value)       
 class MongoConnectionException(Exception):
     def __init__(self,value):
         self.value = value

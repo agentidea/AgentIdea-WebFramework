@@ -114,6 +114,10 @@ class dcProcessInvites:
         command.outCommands.append(loadJS)
     
 class dcShowEvents:
+    """show events"""
+    spec = { 'name':'ShowEvents', 'params':[
+                                         {'name':'panel','req':1,'vals':info.panels}
+                                         ]}
     
     def executeCommand(self,command):
         log("IN command %s" % (command.name))

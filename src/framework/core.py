@@ -101,7 +101,75 @@ class Framework(object):
                 log("************************************************************")
                 
                 
-               
+    def validateCommand(self,command,macro):
+        """validate command off it's specification valid spec = {} """
+        if("spec" in dir(command)):
+            if( command.spec['name'] != macro.name):
+                raise error.CommandNotFoundException("incorrect name expected {0}".format() )
+            else:
+                #check parameters
+                params = command.spec['params']
+                
+                passedParamCount = len(macro.params)
+                expectedParamCount = len(params)
+                
+                if( passedParamCount > expectedParamCount):
+                    raise error.WrongNumberParametersException("passed in %s expected %s" % (passedParamCount,expectedParamCount ))
+                
+                for param in params:
+                    req = param['req']
+                    nme = param['name']
+                    
+                    #was there a requirement constraint?
+                    if(req ==1):
+                        # this parameter is required
+                        if( macro.hasNameValue( nme ) == 1 and macro.getValue( nme ) != ""):
+                            #good
+                            log("required value for %s was passed as %s" % (nme,macro.getValue( nme )))
+                        else:
+                            raise error.RequiredParameterMissingException("Required Parameter '%s' not passed" % (nme))
+                    
+                    #was a value passed?   
+                    valPassed = macro.getValue(nme)
+                    
+                    #apply default values to values not passed
+                    if(valPassed == None):
+                        if('defaultVal' in param):
+                            if('vals' in param):
+                                try:
+                                    valPassed = param['vals'][int(param['defaultVal'])]
+                                except Exception:
+                                    raise error.InvalidCommandSpecificationException("defaultVal is 0 based index into the vals list.")
+                            else:
+                                raise error.InvalidCommandSpecificationException("a default parameter needs a vals list with at least one value")
+                    else:
+                        # a value was passed
+                        #was there a type constraint
+                        if('type' in param):
+                            sType = type(valPassed).__name__
+                            if( sType == param['type']):
+                                log("type check passed %s " % sType)
+                            else:
+                                raise error.InvalidParameterTypeException("Invalid parameter type %s for parameter called %s" % ( sType,nme))
+                    
+
+                        #was there a value constraint
+                        if('vals' in param):
+                            #check if parameter value matches one of these
+                            if(valPassed in param['vals']):
+                                #do nothing
+                                log("good value")
+                            else:
+                                raise error.UnexpectedParameterException("Param Name '{0}' with Value '{1}' did not match one of the required possible values [{2}]".format(nme,valPassed,str(list(param['vals']))))
+
+                return True
+        else:
+            raise error.MissingCommandSpecificationException("this command needs a specification")
+
+        return False
+        
+        
+                   
     def processItinerary(self,itinerary,commandTuple = None):
         """processes the commands in the itinerary"""
         for cmd in itinerary.inCommands:
@@ -147,11 +215,19 @@ class Framework(object):
                 log(" pre execution kreds %s %s " % (kredBits[0],kredBits[1]))
             
             
+            """validate command if spec is present"""
             
-            c.executeCommand(cmd)
-            log("EXECUTE {0}".format(cmd.name))
+            if('spec' in dir(c)):
+                if(self.validateCommand(c, cmd)):
+                    c.executeCommand(cmd)
+                    log("EXECUTE {0}".format(cmd.name))
+            else:
+                c.executeCommand(cmd)
+                log("EXECUTE {0}".format(cmd.name))
         except:
-            log("Error EXECUTE command %s %s" % (klassID,list(sys.exc_info())))
+            tupList = sys.exc_info()
+            
+            log("Error EXECUTE command %s %s" % (klassID,list(tupList)))
             raise
             
         
@@ -366,6 +442,16 @@ class Command(object):
       
     def get_params(self):
         return self._parameterList
+    
+    
+    def hasNameValue(self,key):
+        
+        for param in self.params:
+            if param.name == key:
+                return True
+    
+        return False
+        
     
     def getValue(self,key):
         
