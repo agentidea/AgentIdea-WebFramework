@@ -83,7 +83,7 @@ if(!FWK){
 			 		addParam(m,"arg_" + i,arguments[i]);
 			 	}
 			 
-			 	executeLocalCommand(m);
+			 	executeLocalCommand(this, m);
 	
 			 }	
 		 	
@@ -91,11 +91,6 @@ if(!FWK){
 		 id:"AgentIdea Framework"};
 
 }
-
-
-
-
-	
 
 
 function xmlHttp_callback() 
@@ -277,11 +272,8 @@ function processResponse(res)
      var i = 0;
      for ( i = 0 ;i<resMacros.commands.length;i++)
      {
-        executeLocalCommand( resMacros.commands[i] );
+        executeLocalCommand( this, resMacros.commands[i] );
      }
-     
-     
-     
 }
 
 procTimeout = function(){
@@ -324,7 +316,7 @@ procTimeout = function(){
 
 
 
-function executeLocalCommand(macro)
+function executeLocalCommand(scope, macro)
 {
 
 	if(procTimeout()) { return; }
@@ -332,9 +324,7 @@ function executeLocalCommand(macro)
 	//
 	// PRE JS command
 	//
-	
-
-	
+/*	
     try {
     
     	var preJS = TheUte().unravel(macro.preJS64);
@@ -348,22 +338,26 @@ function executeLocalCommand(macro)
     	}
     	
     }
+ */   
     
-    
-    var s = "cmd" + macro.name + "(macro);";
-    log("LOCAL :: eval(" + s + ")" );
+    //var s = "cmd" + macro.name + "(macro);";
+    var s = "CMDS.cmd" + macro.name;
+    //log("LOCAL :: eval(" + s + ")" );
+    log("LOCAL :: runCommand(" + s + ")" );
     
     //$to do: what if the eval fails ... there is no inspection of the JS objects here ...
     // if commands were part of a namespace, like CMD.showThisAndThat(macro); it would be possible to reflect hasOwnProperty();
     
-    eval(s);
+    var fnPtr = eval(s);
+    runCommand(scope, fnPtr(macro));
     
     log("LOCAL Command: " + s);
     
     //
     // POST JS command
     //
-    
+   
+/* 
      try {
     
     	var postJS = TheUte().unravel(macro.postJS64);
@@ -377,7 +371,7 @@ function executeLocalCommand(macro)
     	}
     	
     }
-    
+*/   
     
 }
 
@@ -811,6 +805,17 @@ function logMsg(msg)
 
 }
 
-
+ /**
+  *  @description: runs local commands without use of eval() 
+  *
+  *  @created: 3/31/2011
+  *                             
+  */
+var runCommand = function (scope, method, overrideArguments){
+ return function(){
+	 var args = (overrideArguments)?overrideArguments:arguments;
+	 return method.apply(scope, args);
+ }
+};
 
 

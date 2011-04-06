@@ -233,8 +233,9 @@ function URLDecoder( encoded )
    // Replace %xx with equivalent character
    // Put [ERROR] in output if %xx is invalid.
    var HEXCHARS = "0123456789ABCDEFabcdef"; 
-  // var encoded = document.URLForm.F2.value;
+   // var encoded = document.URLForm.F2.value;
    var plaintext = "";
+   //if (encoded===undefined) return plaintext;
    var i = 0;
    while (i < encoded.length) {
        var ch = encoded.charAt(i);

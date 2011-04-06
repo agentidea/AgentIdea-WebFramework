@@ -1,24 +1,24 @@
 /**
-
-	custom commands
-
+	custom commands refactored to use Module pattern
 */
 
-cmdShowEvents = function(macro)	{
-	var panel = macro.parameters[0].value;
-	
-	ClearBottomPanels();
-	ClearMessages();
-	WriteToPanel('farwest','');
-	
-	var m = newMacro("ShowEvents");
-	addParam(m,"panel",panel);
-	processJSON(m);
-	
+var CMDS = (function (commands) {
+ var commands = commands || {};
+
+	commands.cmdShowEvents = function(macro)	{
+		var panel = macro.parameters[0].value;
+		
+		ClearBottomPanels();
+		ClearMessages();
+		WriteToPanel('farwest','');
+		
+		var m = newMacro("ShowEvents");
+		addParam(m,"panel",panel);
+		processJSON(m);
 	};
 	
 	
-cmdShowNewTable = function(macro){
+	commands.cmdShowNewTable = function(macro){
 	  var panel = macro.parameters[0].value;
 	  var oPanel = document.getElementById(panel);
 	  if(oPanel != null){
@@ -31,8 +31,7 @@ cmdShowNewTable = function(macro){
 	  }
 	};
 	
-cmdProcessInvites = function(macro)
-	{
+	commands.cmdProcessInvites = function(macro) {
 		ClearBottomPanels();
 		ClearMessages();
 		
@@ -43,18 +42,15 @@ cmdProcessInvites = function(macro)
 		addParam(m,"panel",panel);
 		addParam(m,"table_id",id);
 		processJSON(m);
-	
 	};	
-cmdEditEvent = function(macro)
-	{
+
+	commands.cmdEditEvent = function(macro) {
 		var id = macro.parameters[0].value;
 		var panel = macro.parameters[1].value;
 		alert("to follow ... Edit event " + id + " here");
-	
 	};
 		
-cmdDeleteEvent = function(macro)
-	{
+	commands.cmdDeleteEvent = function(macro) {
 		var id = macro.parameters[0].value;
 		var panel = macro.parameters[1].value;
 		var tableName=macro.parameters[2].value;
@@ -70,5 +66,8 @@ cmdDeleteEvent = function(macro)
 			addParam(m,"table_id",id);
 			processJSON(m);
 		}
-	
 	};	
+
+ 	return commands;
+
+}(CMDS || {}));

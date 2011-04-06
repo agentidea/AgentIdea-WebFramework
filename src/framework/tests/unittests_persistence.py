@@ -1,5 +1,6 @@
 import sys
 import unittest
+sys.path.append('/var/wsgi/tafel')
 
 from src.framework.core import log, Utils, Command, Kontext
 from src.framework.core import Framework as fwk
@@ -14,7 +15,8 @@ class MongoUnitTests(unittest.TestCase):
 
     def setUp(self):
         self.shouldPrintVerbose = True
-        self.shouldPurgeAll = True
+        self.shouldPurgeAll = False
+
         self.shouldDropAll = False
         
     
