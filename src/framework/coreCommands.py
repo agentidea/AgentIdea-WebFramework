@@ -2,13 +2,19 @@
     core Commands file
 """
 import urllib
-from src.framework.core import log, Utils, Command, ReturnEnvelope
+from src.framework.core import log, Utils, Command
 from src.config import info
 from src.framework.core import Framework 
 from src.framework.strings import strings
 
 
+
 class cmdInitialize:
+    """ intialize session, pass to login screen if system uses authentication"""
+    spec = { 'name':'Initialize', 'params':[
+                                         {'name':'panel','req':1,'vals':info.panels}
+                                         ]}
+    
     def executeCommand(self,command):
         
         import uuid
@@ -76,6 +82,13 @@ class cmdInitialize:
 
 
 class cmdAuthenticate:
+    """authenicate user from username and password"""
+    spec = { 'name':'Authenticate', 'params':[
+                                         {'name':'panel','req':1,'vals':info.panels},
+                                         {'name':'usr','req':1,'type':'unicode'},
+                                         {'name':'pwd','req':1,'type':'unicode'}
+                                         ]}
+    
     def executeCommand(self,command):
         panel = command.getValue("panel")
         usr  = command.getValue("usr").decode('base64','strict')
@@ -138,6 +151,10 @@ class cmdAuthenticate:
     
     
 class cmdSignout:
+    """Logout of the system"""
+    spec = { 'name':'Signout', 'params':[
+                                         {'name':'panel','req':1,'vals':info.panels}
+                                         ]}
     def executeCommand(self,command):
         log("%s signed out" % (command.kontext['SessionGUID'])) 
         
@@ -146,6 +163,10 @@ class cmdSignout:
         command.outCommands.append(displayCmd)      
     
 class cmdRemoveRemoteLog:
+    """remove remote log file"""
+    spec = { 'name':'RemoveRemoteLog', 'params':[
+                                         {'name':'panel','req':1,'vals':info.panels}
+                                         ]}
     def executeCommand(self,command):
         panel = command.getValue("panel")
 
@@ -161,6 +182,13 @@ class cmdRemoveRemoteLog:
         command.outCommands.append(displayCmd)        
        
 class cmdShowRemoteLog:
+    """tail remote log"""
+
+    spec = { 'name':'ShowRemoteLog', 'params':[
+                                        {'name':'panel','req':1,'type':'unicode'},
+                                        {'name':'lines','req':1,'type':'int'}
+                                        ]}
+    
     def executeCommand(self,command):
        
         panel = command.getValue("panel")
@@ -186,9 +214,11 @@ class cmdShowRemoteLog:
         displayCmd.addParameter('html64', Utils().pack(s) )
         command.outCommands.append(displayCmd)        
 
-
-
 class cmdShowSupport:
+    """show support screen"""
+    spec = { 'name':'ShowSupport', 'params':[
+                                         {'name':'panel','req':1,'vals':info.panels}
+                                         ]}
     def executeCommand(self,command):
 
         
@@ -208,6 +238,10 @@ class cmdShowSupport:
         command.outCommands.append(displayCmd)
 
 class cmdShowHelp:
+    """show help screen"""
+    spec = { 'name':'ShowHelp', 'params':[
+                                         {'name':'panel','req':1,'vals':info.panels}
+                                         ]}
     def executeCommand(self,command):
 
         
@@ -225,7 +259,15 @@ class cmdShowHelp:
         command.outCommands.append(displayCmd)
 
 class cmdPasswd:
-    """change password for a user"""
+    """change user password"""
+   
+    spec = { 'name':'Passwd', 'params':[
+                                        {'name':'username','req':1,'type':'unicode'},
+                                        {'name':'oldPassword','req':1,'type':'unicode'},
+                                        {'name':'newPassword','req':1,'type':'unicode'},
+                                        {'name':'newPasswordConfirm','req':1,'type':'unicode'}
+                                        ]}
+    
     def executeCommand(self,command):
 
         username = command.getValue("username")
@@ -243,6 +285,10 @@ class cmdPasswd:
         command.outCommands.append(replyCmd)
 
 class cmdShowPwdReset:
+    """ show password reset screen """
+    spec = { 'name':'ShowPwdReset', 'params':[
+                                         {'name':'panel','req':1,'vals':info.panels}
+                                         ]}
     def executeCommand(self,command):
 
         
@@ -288,6 +334,10 @@ class cmdShowPwdReset:
         command.outCommands.append(displayCmd)
         
 class cmdShowCommandLine:
+    """show command line"""
+    spec = { 'name':'ShowCommandLine', 'params':[
+                                         {'name':'panel','req':1,'vals':info.panels}
+                                         ]}
     def executeCommand(self,command):
 
         
@@ -306,6 +356,10 @@ class cmdShowCommandLine:
         command.outCommands.append(displayCmd)
          
 class cmdShowAbout:
+    """ show about panel"""
+    spec = { 'name':'ShowAbout', 'params':[
+                                         {'name':'panel','req':1,'vals':info.panels}
+                                         ]}
     
     def executeCommand(self,command):
         log("IN command %s" % (command.name))
@@ -323,10 +377,13 @@ class cmdShowAbout:
         displayCmd.addParameter('html64', Utils().pack(s) )
         command.outCommands.append(displayCmd)
 
-
 class cmdCommandsReflect:
+    """ Reflects through the commands on the system """
+    
+    spec = { 'name':'CommandsReflect', 'params':[{'name':'panel','req':1,'type':'unicode','vals':info.panels}]}
     
     def executeCommand(self,command):
+        
         log("IN command %s" % (command.name))
         panel = command.getValue("panel")
         
@@ -336,9 +393,9 @@ class cmdCommandsReflect:
         from src.custom import domainCommands
         
         s += "<div class='clsHeader'>core commands</div>"
-        s = self.listCmds(s, dir(coreCommands) ,info.commandCoreTuple)
+        s = self.listCmds(s,'coreCommands', dir(coreCommands) ,info.commandCoreTuple)
         s += "<div class='clsHeader'>custom commands</div>"
-        s = self.listCmds(s, dir(domainCommands),info.commandDomainTuple)
+        s = self.listCmds(s, 'domainCommands',dir(domainCommands),info.commandDomainTuple)
         
         
         
@@ -351,7 +408,7 @@ class cmdCommandsReflect:
         command.outCommands.append(displayCmd)
         
         
-    def listCmds(self,s,lst,t):
+    def listCmds(self,s,package,lst,t):
         
         s += "<table border='1'>"
         for item in lst:
@@ -359,19 +416,111 @@ class cmdCommandsReflect:
                 s += "<tr>"
                 s += "<td>"
                 s += item
+                
+                
+                tmpDict = None
+                from src.framework import coreCommands
+                from src.custom import domainCommands
+                tmpDict = coreCommands.cmdCommandsReflect.spec
+                stringSpec = "tmpDict = {0}.{1}.spec".format(package,item)
+                
+                try:
+                    #reflection
+                    exec( stringSpec )
+                
+                    if(tmpDict != None ):
+                        s += "<div style='padding-left:25px;background-color:beige'>"
+                        #s += Utils().ConvertDictToString(tmpDict)
+                        
+                        s += "<table border='1' cellspacing='0'>"
+                        s += "<tr style='font-weight:bold;'>"
+                        s += "<td>parameter name</td>"
+                        s += "<td>required</td>"
+                        s += "<td>type</td>"
+                        s += "<td>value constraint</td>"
+                        s += "</tr>"
+                        
+                        for param in tmpDict['params']:
+                            
+                            s += "<tr>"
+                            
+                            #param name
+                            s += "<td>{0}</td>".format(param['name'])
+                            
+                            #param required
+                            s += "<td>"
+                            if('req' in param): 
+                                req = int(param['req'])
+                                sReq = "undefined"
+                                if req == 1:
+                                    sReq = "yes"
+                                if req == 0:
+                                    sReq = "no"
+                                    
+                                s+= "{0}".format(sReq)
+                            else:
+                                s += "&nbsp;"
+                            s += "</td>"
+                            
+                            s += "<td>"
+                            if('type' in param): 
+                                s+= "{0}".format(param['type'])
+                            else:
+                                s += "&nbsp;"
+                            s += "</td>"
+                            
+                            s += "<td>"
+                            if('vals' in param): 
+                                
+                                defValIndex = -1
+                                
+                                if('defaultVal' in param):
+                                    defValIndex = int(param['defaultVal'])
+                                
+                                indx = 0
+                                
+                                for val in param['vals']:
+                                    s += "<span style='font-style:"
+                                    
+                                    if(defValIndex > -1):
+                                        if(indx == defValIndex):
+                                            s += "bold"
+                                        else:
+                                            s += "normal"
+                                    s += ";'>&nbsp;{0}</span>,".format(val)
+                                    indx += 1
+                                
+                                s = s[:-1]
+                                
+                                
+                            else:
+                                s += "&nbsp;"
+                            s += "</td>"
+                            s += "</tr>"
+                            
+                        s += "</table></div>"
+                except:
+                    pass
+                        
                 s += "</td>"
-                s += "<td>set group[rwxd] user[rwxd]"
+                s += "<td><!-- actions go here --> "
                 s += "</tr>"
+            
         
         s += "</table>"
         
         return s
 
-
 class cmdShowToc:
+    """show table of contents"""
+    spec = { 'name':'ShowToc', 'params':[
+                                         {'name':'panel','req':1,'vals':info.panels},
+                                         {'name':'what','req':1,'vals':['admin','help']},
+                                         {'name':'orientation','req':1,'vals':['vertical','horizontal']}
+                                         
+                                         ]}
     
     def executeCommand(self,command):
-        log("IN command %s" % (command.name))
         
         what = command.getValue("what")
         panel = command.getValue("panel")
@@ -419,12 +568,9 @@ class cmdShowToc:
         displayCmd.addParameter('html64', s64 )
         command.outCommands.append(displayCmd)
         
-        
-
-
-
-
 class cmdShowNavigation:
+    
+    spec = { 'name':'ShowNavigation', 'params':[{'name':'panel','req':1,'type':'unicode','vals':info.panels}]}
     
     def executeCommand(self,command):
         log("IN command %s" % (command.name))
@@ -473,11 +619,13 @@ class cmdShowNavigation:
         DisplayWindowTitle.addParameter('html64', w64 )
         command.outCommands.append(DisplayWindowTitle)
         
-
 class cmdPing:
+    """ test command """
+    spec = { 'name':'Ping' , 'params':[{'name':'name','req':1 ,'type':'unicode','seq':0,'vals':['bunny','echo','men'],'defaultVal':1},{'name':'age', 'req':0,'seq':1,'type':'int'} ] }
+    
     def executeCommand(self, command):
         name=command.params[0].val
-        
+
         displayCmd = Command("ReturnCommand")
         displayCmd.addParameter('echo', name )
         

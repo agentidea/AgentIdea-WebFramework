@@ -25,7 +25,7 @@ class info(object):
     LoginLogoURL = './images/LoginLogo.jpg' 
     
     authenticateUser = True # users required to login via a login prompt 
-    sessionTimeoutMinutes = 2
+    sessionTimeoutMinutes = 25
     passwordAttempts = 6
     
     SHOW_ACTION = True
@@ -68,13 +68,28 @@ class info(object):
                        #{'name':'Oren Kredo','email':'Oren.Kredo@gmail.com'}
                        ]
 
+    panels = [
+              'north',
+              'south',
+              'east',
+              'west',
+              'center',
+              'farnorth',
+              'farsouth',
+              'fareast',
+              'farwest'
+              ]
+    
+    
     
     #WINDOWS
     #LogPath ="C:\inetpub\wwwroot\\net4\pyInetPub\DieTafel\core\src\log"
     #PathSep = '\\'
     
     #UNIX
-    LogPath = "/var/wsgi/tafel/log"
+    #LogPath = "/var/wsgi/tafel/log"
+    LogPath = "/var/log/agentidea"
+    
     PathSep = '/'
     
     Log = "pyLog.txt"
