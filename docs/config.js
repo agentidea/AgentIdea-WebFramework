@@ -14,6 +14,7 @@
 
 
 // UNIX
-var dest = "184.106.112.115";
-var url =  "http://"+ dest +"/table";
+//var dest = "184.106.112.115";
+var dest = "localhost:7171"
+var url =  "http://"+ dest +"/tafel";
 

@@ -322,3 +322,47 @@
 	font-size:12pt;
 	font-family:Verdana,Arial;
 }
+
+.clsCMDname
+{
+	background-color:#000000;
+	color:#e0e0e0;
+	font-size:12pt;
+	font-family:Verdana,Arial;
+}
+.clsCMDparam
+{
+	background-color:transparent;
+	color:#000000;
+	font-size:10pt;
+	font-family:Verdana,Arial;
+	border-right:groove;
+	padding-right:6px;
+}
+.clsCMDparams
+{
+	background-color:beige;
+	padding-left:45px;
+}
+.clsCMDdescription
+{
+	background-color:beige;
+	color:#000000;
+	font-size:8pt;
+	font-family:Verdana,Arial;
+	font-style:italic;
+}
+.clsCMDtable
+{
+	background-color:beige;
+}
+
+
+
+
+
+
+
+
+
+

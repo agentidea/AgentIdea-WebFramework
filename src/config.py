@@ -6,7 +6,7 @@ from src.framework.strings import strings
 class info(object):
     versionMajor = 0
     versionMinor = 5
-    versionRevision = 9
+    versionRevision = 10
     version = ( versionMajor,versionMinor,versionRevision)
 
     appName = "Table"
@@ -57,7 +57,8 @@ class info(object):
             
             ],
             'admin': [
-                {'name':'commands','A':"FWK.say('ShowAdmin','center');"},
+                {'name':'Server Commands','A':"FWK.say('ShowAdmin','center');"},
+                 {'name':'Local Commands','A':"FWK.say('ShowLocalCommands','center');"},
                 {'name':'pwd reset','A':"FWK.say('ShowPwdReset','center');"}
             ]
             
