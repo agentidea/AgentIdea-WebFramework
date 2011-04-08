@@ -9,6 +9,7 @@ from urllib import unquote_plus
 #import core
 
 import sys
+# $to do: horrid horrid horrid ...
 #sys.path.append('/var/wsgi/tafel/')
 sys.path.append('/Users/grantsteinfeld/dev/framework/eclipse_v1/fwk/src/')
 
