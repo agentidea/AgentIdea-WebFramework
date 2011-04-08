@@ -1,0 +1,110 @@
+"""
+    Framework Configuration File
+"""
+from src.framework.strings import strings
+
+class info(object):
+    versionMajor = 0
+    versionMinor = 5
+    versionRevision = 10
+    version = ( versionMajor,versionMinor,versionRevision)
+
+    appName = "Table"
+    
+    ClientID = "demo"
+    dbDefault = "tafel"
+    identity = (ClientID,dbDefault)
+    
+    commandCoreTuple = ("src.framework.coreCommands","cmd")
+    commandDomainTuple = ("src.custom.domainCommands","dc")
+    
+    rootTableCollectionName = "events"
+    groupCollection = "groups"
+    userCollection = "users"
+    
+    LoginLogoURL = './images/LoginLogo.jpg' 
+    
+    authenticateUser = True # users required to login via a login prompt 
+    sessionTimeoutMinutes = 25
+    passwordAttempts = 6
+    
+    SHOW_ACTION = True
+    HIDE_ACTION = False
+    
+    
+    dbIP = "127.0.0.1"
+    dbPort = 27017
+    dbPwd = ""
+    dbUsr = ""
+    
+    appLogoImage = "cropped.jpg"
+    nav = [
+           
+           {'name':'New','A':"FWK.say('ShowNewTable','west');"},
+           {'name':'Tables','A':"FWK.say('ShowEvents','west');"},
+           {'name':'Admin','A':"FWK.say('ShowToc','admin','farwest','vertical');"},
+           {'name':'help','A':"FWK.say('ShowToc','help','farwest','vertical');"},
+           
+           {'name': strings.SIGNOUT, 'A':"FWK.say('Signout');"}
+           
+           ]
+    vertNav = {
+            
+            'help': [
+                {'name':'about','A':"FWK.say('ShowAbout','center');"},
+                {'name':'support','A':"FWK.say('ShowSupport','center');"},
+                {'name':'console','A':"FWK.say('ShowConsole','center');"}
+            
+            ],
+            'admin': [
+                {'name':'Server Commands','A':"FWK.say('ShowAdmin','center');"},
+                 {'name':'Local Commands','A':"FWK.say('ShowLocalCommands','center');"},
+                {'name':'pwd reset','A':"FWK.say('ShowPwdReset','center');"}
+            ]
+            
+            }
+
+    supportContacts = [
+                       {'name':'Grant Steinfeld','email':'GrantSteinfeld@gmail.com'},
+                       #{'name':'Oren Kredo','email':'Oren.Kredo@gmail.com'}
+                       ]
+
+    panels = [
+              'north',
+              'south',
+              'east',
+              'west',
+              'center',
+              'farnorth',
+              'farsouth',
+              'fareast',
+              'farwest'
+              ]
+    
+    
+    
+    #WINDOWS
+    #LogPath ="C:\inetpub\wwwroot\\net4\pyInetPub\cppName\ore\src\log"
+    #PathSep = '\\'
+    
+    #UNIX
+    LogPath = "/var/log/agentidea"
+    
+    PathSep = '/'
+    
+    Log = "appName.Log"
+    LogFile = "{0}{1}{2}".format(LogPath,PathSep,Log)
+    
+    
+    
+    smtpServer = "mail.com"
+    smtpUser = "exammple@agentidea.com"
+    smtpPwd = "your password"
+    
+    
+    
+    #command on load string JS as base 64
+    onCommandLoad64 = "Ly9hZGQgb25Db21tYW5kTG9hZCBKYXZhU2NyaXB0IGhlcmU="
+    onCommandUnload64 = "Ly9hZGQgb25Db21tYW5kVW5sb2FkIEphdmFTY3JpcHQgaGVyZQ=="
+    
+    
