@@ -5,5 +5,4 @@
 *.pyo
 config.py
 config.js
-index.wsgi
 
